@@ -1,4 +1,5 @@
 var acg = acg || {};
+var cc = cc || {};
 
 acg.bootstrap = function (elem) {
     'use strict';
