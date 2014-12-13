@@ -26,6 +26,7 @@ var initStage = function () {
             ]
         ]
     ));
+    acg.travel(0);
 };
 
 timer = setInterval(function () {

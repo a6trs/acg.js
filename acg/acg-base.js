@@ -33,4 +33,7 @@ acg.put = function (time, id) {
     cc.director.getRunningScene().scheduleOnce(function() {
         acg.sweep(id);
     }, time + acg.action_duration(id));
-}
+};
+
+acg.travel = function (time) {
+};
