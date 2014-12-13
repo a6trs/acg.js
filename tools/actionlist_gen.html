@@ -1,0 +1,33 @@
+<html>
+    <head>
+        <title>ACG.JS Action List Generator</title>
+        <script type='application/javascript' src='actionlist_gen.js'></script>
+        <script type='application/javascript'>
+            function parse() {
+                var r = actionList(document.getElementById('code').value);
+                document.getElementById('results').innerHTML = r;
+            }
+        </script>
+    </head>
+    <body>
+        <h1>ACG.JS Action List Generator User Interface</h1>
+        <br>
+        Paste Cocos2d-HTML5 code here:<br>
+        <textarea id='code' style='width: 100%' rows='30'></textarea><br>
+        <button id='parse' onclick='parse()'>Parse!</button>
+        <p id='results'></p>
+        <br><br><hr>
+        Files to be pasted:<br>
+        * actions/CCActionEase.js<br>
+        * actions/CCActionInterval.js<br>
+        * actions/CCActionInstant.js<br>
+        * actions/CCActionTween.js (optional)<br>
+        <br>
+        <small>
+            Links:<br>
+            https://raw.githubusercontent.com/cocos2d/cocos2d-html5/develop/cocos2d/actions/CCActionEase.js<br>
+            https://raw.githubusercontent.com/cocos2d/cocos2d-html5/develop/cocos2d/actions/CCActionInterval.js<br>
+            https://raw.githubusercontent.com/cocos2d/cocos2d-html5/develop/cocos2d/actions/CCActionInstant.js<br>
+        </small>
+    </body>
+</html>

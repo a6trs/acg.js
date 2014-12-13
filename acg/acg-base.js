@@ -9,5 +9,9 @@ acg.place = function (id) {
     }
 };
 
+acg.matter = function (id) {
+    return acg.matters[id];
+}
+
 acg.put = function (time, id) {
 }

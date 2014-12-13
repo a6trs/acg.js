@@ -5291,6 +5291,20 @@ cc.Node = cc.Class.extend({
         this._position.y = y;
         this.setNodeDirty();
     },
+    getNormalizedPositionX: function () {
+        return this._normalizedPosition.x;
+    },
+    setNormalizedPositionX: function (x) {
+        this._normalizedPosition.x = x;
+        this.setNodeDirty();
+    },
+    getNormalizedPositionY: function () {
+        return this._normalizedPosition.y;
+    },
+    setNormalizedPositionY: function (y) {
+        this._normalizedPosition.y = y;
+        this.setNodeDirty();
+    },
     getChildrenCount: function () {
         return this._children.length;
     },
@@ -11918,6 +11932,7 @@ cc.HashElement = cc.Class.extend({
         this.hh = null;
     }
 });
+//////////////// ACTIONS BEGIN ////////////////
 cc.ActionManager = cc.Class.extend({
     _hashTargets:null,
     _arrayTargets:null,
@@ -12338,9 +12353,9 @@ cc.Follow = cc.Action.extend({
         if (this._boundarySet) {
             if (this._boundaryFullyCovered)
                 return;
-	        this.target.setPosition(cc.clampf(tempPosX, this.leftBoundary, this.rightBoundary), cc.clampf(tempPosY, this.bottomBoundary, this.topBoundary));
+	        this.target.setNormalizedPosition(cc.clampf(tempPosX, this.leftBoundary, this.rightBoundary), cc.clampf(tempPosY, this.bottomBoundary, this.topBoundary));
         } else {
-            this.target.setPosition(tempPosX, tempPosY);
+            this.target.setNormalizedPosition(tempPosX, tempPosY);
         }
     },
     isDone:function () {
@@ -12961,8 +12976,8 @@ cc.MoveBy = cc.ActionInterval.extend({
     },
     startWithTarget:function (target) {
         cc.ActionInterval.prototype.startWithTarget.call(this, target);
-        var locPosX = target.getPositionX();
-        var locPosY = target.getPositionY();
+        var locPosX = target.getNormalizedPositionX();
+        var locPosY = target.getNormalizedPositionY();
         this._previousPosition.x = locPosX;
         this._previousPosition.y = locPosY;
         this._startPosition.x = locPosX;
@@ -12975,8 +12990,8 @@ cc.MoveBy = cc.ActionInterval.extend({
             var y = this._positionDelta.y * dt;
             var locStartPosition = this._startPosition;
             if (cc.ENABLE_STACKABLE_ACTIONS) {
-                var targetX = this.target.getPositionX();
-                var targetY = this.target.getPositionY();
+                var targetX = this.target.getNormalizedPositionX();
+                var targetY = this.target.getNormalizedPositionY();
                 var locPreviousPosition = this._previousPosition;
                 locStartPosition.x = locStartPosition.x + targetX - locPreviousPosition.x;
                 locStartPosition.y = locStartPosition.y + targetY - locPreviousPosition.y;
@@ -12984,9 +12999,9 @@ cc.MoveBy = cc.ActionInterval.extend({
                 y = y + locStartPosition.y;
 	            locPreviousPosition.x = x;
 	            locPreviousPosition.y = y;
-	            this.target.setPosition(x, y);
+	            this.target.setNormalizedPosition(x, y);
             } else {
-                this.target.setPosition(locStartPosition.x + x, locStartPosition.y + y);
+                this.target.setNormalizedPosition(locStartPosition.x + x, locStartPosition.y + y);
             }
         }
     },
@@ -13028,8 +13043,8 @@ cc.MoveTo = cc.MoveBy.extend({
     },
     startWithTarget:function (target) {
         cc.MoveBy.prototype.startWithTarget.call(this, target);
-        this._positionDelta.x = this._endPosition.x - target.getPositionX();
-        this._positionDelta.y = this._endPosition.y - target.getPositionY();
+        this._positionDelta.x = this._endPosition.x - target.getNormalizedPositionX();
+        this._positionDelta.y = this._endPosition.y - target.getNormalizedPositionY();
     }
 });
 cc.moveTo = function (duration, position, y) {
@@ -13164,8 +13179,8 @@ cc.JumpBy = cc.ActionInterval.extend({
     },
     startWithTarget:function (target) {
         cc.ActionInterval.prototype.startWithTarget.call(this, target);
-        var locPosX = target.getPositionX();
-        var locPosY = target.getPositionY();
+        var locPosX = target.getNormalizedPositionX();
+        var locPosY = target.getNormalizedPositionY();
         this._previousPosition.x = locPosX;
         this._previousPosition.y = locPosY;
         this._startPosition.x = locPosX;
@@ -13180,8 +13195,8 @@ cc.JumpBy = cc.ActionInterval.extend({
             var x = this._delta.x * dt;
             var locStartPosition = this._startPosition;
             if (cc.ENABLE_STACKABLE_ACTIONS) {
-                var targetX = this.target.getPositionX();
-                var targetY = this.target.getPositionY();
+                var targetX = this.target.getNormalizedPositionX();
+                var targetY = this.target.getNormalizedPositionY();
                 var locPreviousPosition = this._previousPosition;
                 locStartPosition.x = locStartPosition.x + targetX - locPreviousPosition.x;
                 locStartPosition.y = locStartPosition.y + targetY - locPreviousPosition.y;
@@ -13189,9 +13204,9 @@ cc.JumpBy = cc.ActionInterval.extend({
                 y = y + locStartPosition.y;
 	            locPreviousPosition.x = x;
 	            locPreviousPosition.y = y;
-	            this.target.setPosition(x, y);
+	            this.target.setNormalizedPosition(x, y);
             } else {
-                this.target.setPosition(locStartPosition.x + x, locStartPosition.y + y);
+                this.target.setNormalizedPosition(locStartPosition.x + x, locStartPosition.y + y);
             }
         }
     },
@@ -13278,8 +13293,8 @@ cc.BezierBy = cc.ActionInterval.extend({
     },
     startWithTarget:function (target) {
         cc.ActionInterval.prototype.startWithTarget.call(this, target);
-        var locPosX = target.getPositionX();
-        var locPosY = target.getPositionY();
+        var locPosX = target.getNormalizedPositionX();
+        var locPosY = target.getNormalizedPositionY();
         this._previousPosition.x = locPosX;
         this._previousPosition.y = locPosY;
         this._startPosition.x = locPosX;
@@ -13301,8 +13316,8 @@ cc.BezierBy = cc.ActionInterval.extend({
             var y = cc.bezierAt(ya, yb, yc, yd, dt);
             var locStartPosition = this._startPosition;
             if (cc.ENABLE_STACKABLE_ACTIONS) {
-                var targetX = this.target.getPositionX();
-                var targetY = this.target.getPositionY();
+                var targetX = this.target.getNormalizedPositionX();
+                var targetY = this.target.getNormalizedPositionY();
                 var locPreviousPosition = this._previousPosition;
                 locStartPosition.x = locStartPosition.x + targetX - locPreviousPosition.x;
                 locStartPosition.y = locStartPosition.y + targetY - locPreviousPosition.y;
@@ -13310,9 +13325,9 @@ cc.BezierBy = cc.ActionInterval.extend({
                 y = y + locStartPosition.y;
 	            locPreviousPosition.x = x;
 	            locPreviousPosition.y = y;
-	            this.target.setPosition(x, y);
+	            this.target.setNormalizedPosition(x, y);
             } else {
-                this.target.setPosition(locStartPosition.x + x, locStartPosition.y + y);
+                this.target.setNormalizedPosition(locStartPosition.x + x, locStartPosition.y + y);
             }
         }
     },
@@ -14040,7 +14055,7 @@ cc.Place = cc.ActionInstant.extend({
         return true;
     },
     update:function (dt) {
-        this.target.setPosition(this._x, this._y);
+        this.target.setNormalizedPosition(this._x, this._y);
     },
     clone:function(){
         var action = new cc.Place();
@@ -15498,6 +15513,7 @@ cc._easeCubicActionInOut = {
 cc.easeCubicActionInOut = function(){
     return cc._easeCubicActionInOut;
 };
+//////////////// ACTIONS END ////////////////
 cc.cardinalSplineAt = function (p0, p1, p2, p3, tension, t) {
     var t2 = t * t;
     var t3 = t2 * t;
