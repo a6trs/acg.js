@@ -3,7 +3,7 @@ var acg = acg || {};
 acg.bootstrap('game_canvas');
 
 var initStage = function () {
-    acg.place(acg.img('h.png',
+    acg.put(3, acg.img('h.png',
         {x: 0.618, y: 0.618, ax: 1, ay: 1, scale: 0.3},
         ['+',
             ['move-to', 1, cc.p(0.6, 0.4)],
@@ -26,7 +26,6 @@ var initStage = function () {
             ]
         ]
     ));
-    acg.matter(0).runAction(acg.ac.parse(actions));
 };
 
 timer = setInterval(function () {
