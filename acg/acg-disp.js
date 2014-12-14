@@ -1,7 +1,7 @@
 var acg = acg || {};
 var cc = cc || {};
 
-acg.bootstrap = function (elem) {
+acg.bootstrap = function (elem, callback) {
     'use strict';
     cc.game.onStart = function () {
         cc.view.adjustViewPort(true);
@@ -15,4 +15,13 @@ acg.bootstrap = function (elem) {
         cc.director.runScene(new cc.Scene());
     };
     cc.game.run(elem);
+    // Wait until the director is ready, and then call the function
+    if (callback) {
+        var timer = setInterval(function () {
+            if (cc.director && cc.director.getRunningScene()) {
+                clearInterval(timer);
+                callback();
+            }
+        }, 300);
+    }
 };
