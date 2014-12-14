@@ -4,7 +4,7 @@ acg.bootstrap('game_canvas');
 
 var initStage = function () {
     acg.put(3, acg.img('h.png',
-        {x: 0.618, y: 0.618, ax: 1, ay: 1, scale: 0.3},
+        {x: 0.618, y: 0.618, ax: 1, ay: 1, scale: 0.3, zorder: 3},
         ['+',
             ['move-to', 1, cc.p(0.6, 0.4)],
             ['jump-by', 1, cc.p(0, 0.3), 0.05, 3],
@@ -25,6 +25,20 @@ var initStage = function () {
                 ['scale-to', 0.7, 1]
             ]
         ]
+    ));
+    acg.put(1, acg.img('h.png',
+        {x: 0.5, y: 0.5, scale: 0.18, opacity: 0.6, zorder: 10},
+        ['+',
+            ['bezier-to', 3.6, [cc.p(0.5, 0.3), cc.p(0.6, 0.8), cc.p(0.6, 0.3)]],
+            ['jump-by', 1.6, cc.p(0, 0), 0.05, 8],
+            ['repeat',
+                ['ease-bounce-out', ['move-by', 1, cc.p(0, -0.1)]]
+            , 3]
+        ]
+    ));
+    acg.put(0, acg.img('h.png',
+        {x: 0.3, y: 0.5, scale: 0.24, colour: [0, 255, 0]},
+        ['delay', 10]
     ));
     acg.travel(0);
 };

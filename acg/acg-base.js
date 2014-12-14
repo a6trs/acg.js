@@ -1,5 +1,9 @@
 var acg = acg || {};
 
+// Wrap Cocos2d-x functions
+acg.p = cc.p;
+acg.colour = cc.color;
+
 acg.matters = [];
 
 acg.place = function (id) {
