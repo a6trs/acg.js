@@ -11,6 +11,9 @@ acg.place = function (id) {
     if (s) {
         cc.director.getRunningScene().addChild(s);
         if (s._acg_action) s.runAction(s._acg_action);
+        // TODO: Remove these after implementing travel()
+        s._acg_action._firstTick = false;
+        s._acg_action._elapsed = 3;
     }
 };
 
