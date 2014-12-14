@@ -38,6 +38,7 @@ var initStage = function () {
         {x: 0.3, y: 0.5, scale: 0.24, colour: [0, 255, 0]},
         ['delay', 10]
     ));
+    acg.commit();
     acg.travel(0);
 };
 
