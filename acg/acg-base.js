@@ -6,24 +6,26 @@ acg.colour = cc.color;
 
 acg.matters = [];
 
-acg.entertime = [];
-acg.leavetime = [];
+acg.time = 0;
+acg._last_flow_idx = -1;
+
+acg.EVENT_ENTER = 0;
+acg.EVENT_LEAVE = 1;
+acg._flow = [];
+acg._flow_tmp = [];
 
 acg.place = function (id) {
     var s = acg.matters[id];
     if (s) {
         cc.director.getRunningScene().addChild(s);
-        if (s._acg_action) s.runAction(s._acg_action);
-        // TODO: Remove these after implementing travel()
-        s._acg_action._firstTick = false;
-        s._acg_action._elapsed = 3;
+        if (s._acg_action) s._acg_action.startWithTarget(s);
     }
 };
 
 acg.sweep = function (id) {
     var s = acg.matters[id];
     if (s) {
-        s.removeFromParent();
+        s.removeFromParent(false);
     }
 };
 
@@ -37,8 +39,9 @@ acg.matter = function (id) {
 };
 
 acg.put = function (time, id) {
-    acg.entertime.push({time: time, id: id});
-    acg.leavetime.push({time: time + acg.action_duration(id), id: id});
+    acg.matters[id]._acg_entertime = time;
+    acg._flow_tmp.push({time: time, type: acg.EVENT_ENTER, id: id});
+    acg._flow_tmp.push({time: time + acg.action_duration(id), type: acg.EVENT_LEAVE, id: id});
 };
 
 acg.sort = function (a) {
@@ -62,16 +65,77 @@ acg.find = function (a, t) {
 }
 
 acg.commit = function () {
+    // All algorithmic stuff
     // Sort the arrays
-    acg.sort(acg.entertime);
-    acg.sort(acg.leavetime);
+    acg._flow = [];
+    acg.sort(acg._flow_tmp);
+    var last_time = -1;
+    for (var i = 0; i < acg._flow_tmp.length; i++) {
+        var cur = acg._flow_tmp[i];
+        if (Math.abs(cur.time - last_time) <= 0.01) {
+            acg._flow[acg._flow.length - 1].events.push(cur);
+        } else {
+            acg._flow.push({time: cur.time, events: [cur]});
+            last_time = cur.time;
+        }
+    }
+    acg._flow[-1] = {present: []};
+    for (var i = 0; i < acg._flow.length; i++) {
+        var cur = acg._flow[i];
+        // http://stackoverflow.com/q/597588
+        var present = acg._flow[i - 1].present.slice();
+        cur.events.forEach(function (e) {
+            if (e.type === acg.EVENT_LEAVE) {
+                for (var j = 0; j < present.length; j++)
+                    if (present[j] === e.id) present[j] = -1;
+            } else {
+                present.push(e.id);
+            }
+        });
+        // Test data: [1, 0, 0, 0, 4, 2, 0, 9, 0] remove all zeroes
+        cur.present = [];
+        for (var j = 0; j < present.length; j++) {
+            if (present[j] !== -1) cur.present.push(present[j]);
+        }
+        acg._flow[i] = cur;
+    }
+    console.log();
 };
 
 acg.travel = function (time) {
-    cc.director.getRunningScene().scheduleOnce(function() {
-        acg.place(id);
-    }, time);
-    cc.director.getRunningScene().scheduleOnce(function() {
-        acg.sweep(id);
-    }, time + acg.action_duration(id));
+    var idx = acg.find(acg._flow, acg.time);
+    if (idx !== -1) {
+        acg._flow[idx].present.forEach(function (id) {
+            acg.sweep(id);
+        });
+    }
+    idx = acg.find(acg._flow, time);
+    if (idx !== -1) {
+        acg._flow[idx].present.forEach(function (id) {
+            acg.place(id);
+        });
+    }
+    acg._last_flow_idx = -1;
+    acg.time = time;
+    cc.director.getRunningScene().update = acg.update;
+    cc.director.getRunningScene().scheduleUpdate();
 };
+
+acg.update = function (dt) {
+    acg.time += dt;
+    var idx = acg.find(acg._flow, acg.time);
+    if (acg._last_flow_idx !== idx) {
+        acg._flow[idx].events.forEach(function (e) {
+            if (e.type === acg.EVENT_LEAVE) {
+                acg.sweep(e.id);
+            } else {
+                acg.place(e.id);
+            }
+        });
+        acg._last_flow_idx = idx;
+    }
+    acg._flow[idx].present.forEach(function (id) {
+        var m = acg.matters[id];
+        m._acg_action.step(acg.time - m._acg_entertime - m._acg_action.getElapsed());
+    });
+}

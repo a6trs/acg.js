@@ -1,6 +1,7 @@
 var acg = acg || {};
 
 var initStage = function () {
+    // 3s -> 8.5s
     acg.put(3, acg.img('h.png',
         {x: 0.618, y: 0.618, ax: 1, ay: 1, scale: 0.3, zorder: 3},
         ['+',
@@ -12,7 +13,7 @@ var initStage = function () {
             ],
             ['ease-elastic-out',
                 ['move-by', 2, cc.p(-0.4, -0.4)]
-            ],
+            ]/*,
             ['delay', 1],
             ['blink', 5, 4],
             ['flip-y', true],
@@ -21,9 +22,10 @@ var initStage = function () {
             ],
             ['ease-sine-in-out',
                 ['scale-to', 0.7, 1]
-            ]
+            ]*/
         ]
     ));
+    // 1s -> 9.2s
     acg.put(1, acg.img('h.png',
         {x: 0.5, y: 0.5, scale: 0.18, opacity: 0.6, zorder: 10},
         ['+',
@@ -34,9 +36,15 @@ var initStage = function () {
             , 3]
         ]
     ));
+    // 0s -> 10s
     acg.put(0, acg.img('h.png',
         {x: 0.3, y: 0.5, scale: 0.24, colour: [0, 255, 0]},
         ['delay', 10]
+    ));
+    // 9s -> 10s
+    acg.put(9, acg.img('h.png',
+        {x: 0.35, y: 0.55, scale: 0.24},
+        ['delay', 1]
     ));
     acg.commit();
     acg.travel(0);
