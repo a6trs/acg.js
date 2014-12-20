@@ -3,6 +3,12 @@ var acg = acg || {};
 // Wrap Cocos2d-x functions
 acg.p = cc.p;
 acg.colour = cc.color;
+// ... and constants
+acg.ALIGN_LEFT = cc.TEXT_ALIGNMENT_LEFT;
+acg.ALIGN_CENTRE = cc.TEXT_ALIGNMENT_CENTER;    // also for vertical ones
+acg.ALIGN_RIGHT = cc.TEXT_ALIGNMENT_RIGHT;
+acg.ALILGN_TOP = cc.VERTICAL_TEXT_ALIGNMENT_TOP;
+acg.ALILGN_BOTTOM = cc.VERTICAL_TEXT_ALIGNMENT_BOTTOM;
 
 acg.matters = [];
 
@@ -19,8 +25,8 @@ acg.place = function (id) {
 
 acg.sweep = function (id) {
     var s = acg.matters[id];
-    if (s && s._parent) {
-        s.removeFromParent(false);
+    if (s) {
+        cc.director.getRunningScene().removeChild(s, false);
     }
 };
 
@@ -47,4 +53,14 @@ acg.apply_attr = function (s, attr) {
     s.setFlippedY(attr.flipy || false);
     s.setLocalZOrder(attr.zorder || 0);
     s.setVisible(attr.visible || true);   // deprecated
+
+    // Class-specific attributes
+    if (s instanceof cc.LabelTTF) {
+        s.setFontName(attr.fontname || 'Arial');
+        s.setFontSize(attr.fontsize || 24); // The default is 16 in Cocos2d-JS
+        s.setHorizontalAlignment(attr.halign || acg.ALIGN_CENTRE);
+        s.setVerticalAlignment(attr.valign || acg.ALIGN_CENTRE);
+        s.setDimensions(attr.size || cc.size(0, 0));
+        s.setString(attr.text || 'WHAT DO I NEED TO SAY??');
+    }
 };

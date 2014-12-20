@@ -36,7 +36,7 @@ var initStage = function () {
             , 3]
         ]
     ));
-    // 0s -> 10s
+    // 0s -> 2s
     acg.put(0, acg.img('h.png',
         {x: 0.3, y: 0.5, scale: 0.24, colour: [0, 255, 0]},
         ['fade-out', 2]
@@ -45,6 +45,11 @@ var initStage = function () {
     acg.put(9, acg.img('h.png',
         {x: 0.35, y: 0.55, scale: 0.24},
         ['delay', 1]
+    ));
+    acg.put(3, acg.text(
+        {x: 0.5, y: 0.5, fontsize: 30, text: 'Hi, there',
+            colour: [255, 255, 0], zorder: 100},
+        ['ease-sine-out', ['move-by', 2, acg.p(0, 0.2)]]
     ));
     acg.commit();
     acg.travel(0);

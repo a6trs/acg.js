@@ -85,7 +85,7 @@ acg.travel = function (time) {
             acg.place(id);
         });
     }
-    acg._last_flow_idx = -1;
+    acg._last_flow_idx = acg.find(acg._flow, time);
     acg.time = time;
     cc.director.getRunningScene().update = acg.update;
     cc.director.getRunningScene().scheduleUpdate();
@@ -95,14 +95,13 @@ acg.update = function (dt) {
     acg.time += dt;
     var idx = acg.find(acg._flow, acg.time);
     if (acg._last_flow_idx !== idx) {
-        console.log('flow: ' + idx);
         acg._flow[idx].events.forEach(function (e) {
             if (e.type === acg.EVENT_LEAVE) {
                 acg.sweep(e.id);
-                console.log('flow-sweep: ' + idx);
+                console.log('flow-sweep: ' + e.id);
             } else {
                 acg.place(e.id);
-                console.log('flow-place: ' + idx);
+                console.log('flow-place: ' + e.id);
             }
         });
         acg._last_flow_idx = idx;
