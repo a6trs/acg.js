@@ -40,17 +40,18 @@ acg.matter = function (id) {
 };
 
 acg.apply_attr = function (s, attr) {
+    var size = cc.director.getVisibleSize();
     if (!(attr.x && attr.y)) attr.x = attr.y = 0.5;
     if (!(attr.ax && attr.ay)) attr.ax = attr.ay = 0.5;
     s.setNormalizedPosition(attr.x, attr.y);
+    // FIXME: attr.ax and attr.ay don't work for layers (rects)
     s.setAnchorPoint(attr.ax, attr.ay);
     s.setScale(attr.scale || 1);
     // FIXME: attr.colour doesn't affect sprites
-    s.setColor(cc.color.apply(null, attr.colour) || cc.color.WHITE);
+    if (attr.colour) s.setColor(cc.color.apply(null, attr.colour));
+    else s.setColor(cc.color.WHITE);
     s.setOpacity(attr.opacity * 255.0 || 255);
     s.setRotation(attr.rotation || 0);
-    s.setFlippedX(attr.flipx || false);
-    s.setFlippedY(attr.flipy || false);
     s.setLocalZOrder(attr.zorder || 0);
     s.setVisible(attr.visible || true);   // deprecated
 
@@ -62,5 +63,13 @@ acg.apply_attr = function (s, attr) {
         s.setVerticalAlignment(attr.valign || acg.ALIGN_CENTRE);
         s.setDimensions(attr.size || cc.size(0, 0));
         s.setString(attr.text || 'WHAT DO I NEED TO SAY??');
+    }
+    if (s instanceof cc.Sprite) {
+        s.setFlippedX(attr.flipx || false);
+        s.setFlippedY(attr.flipy || false);
+    } else if (s instanceof cc.Layer) {
+        attr.width = attr.width || 1;
+        attr.height = attr.height || 1;
+        s.changeWidthAndHeight(attr.width * size.width, attr.height * size.height);
     }
 };

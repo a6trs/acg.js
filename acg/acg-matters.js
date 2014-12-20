@@ -6,7 +6,7 @@ acg.init_matter = function (m, attr, action) {
     if (action) m._acg_action = acg.ac.parse(action);
     m._acg_id = acg.matters.push(m) - 1;
     m._acg_attr = attr;
-}
+};
 
 acg.img = function (img, attr, action) {
     var s = cc.Sprite.create(img);
@@ -16,6 +16,12 @@ acg.img = function (img, attr, action) {
 
 acg.text = function (attr, action) {
     var s = cc.LabelTTF.create();
+    acg.init_matter(s, attr, action);
+    return s._acg_id;
+};
+
+acg.rect = function (attr, action) {
+    var s = cc.LayerColor.create();
     acg.init_matter(s, attr, action);
     return s._acg_id;
 };
