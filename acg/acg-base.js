@@ -19,7 +19,7 @@ acg.place = function (id) {
 
 acg.sweep = function (id) {
     var s = acg.matters[id];
-    if (s) {
+    if (s && s._parent) {
         s.removeFromParent(false);
     }
 };
