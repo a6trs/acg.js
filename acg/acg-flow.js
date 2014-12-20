@@ -76,6 +76,7 @@ acg.travel = function (time) {
     if (idx !== -1) {
         acg._flow[idx].present.forEach(function (id) {
             acg.sweep(id);
+            console.log('sweep: ' + id);
         });
     }
     idx = acg.find(acg._flow, time);
@@ -94,11 +95,14 @@ acg.update = function (dt) {
     acg.time += dt;
     var idx = acg.find(acg._flow, acg.time);
     if (acg._last_flow_idx !== idx) {
+        console.log('flow: ' + idx);
         acg._flow[idx].events.forEach(function (e) {
             if (e.type === acg.EVENT_LEAVE) {
                 acg.sweep(e.id);
+                console.log('flow-sweep: ' + idx);
             } else {
                 acg.place(e.id);
+                console.log('flow-place: ' + idx);
             }
         });
         acg._last_flow_idx = idx;

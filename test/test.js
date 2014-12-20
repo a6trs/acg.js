@@ -39,7 +39,7 @@ var initStage = function () {
     // 0s -> 10s
     acg.put(0, acg.img('h.png',
         {x: 0.3, y: 0.5, scale: 0.24, colour: [0, 255, 0]},
-        ['delay', 10]
+        ['fade-out', 2]
     ));
     // 9s -> 10s
     acg.put(9, acg.img('h.png',
