@@ -63,6 +63,8 @@ var initStage = function () {
             ['delay', 1],
             ['ease-cubic-out', ['go-number', 2, 800]],
             ['ease-cubic-in-out', ['go-number', 2, 0]],
+            ['delay', 1],
+            ['change-text', 'Well, bye bye'],
             ['delay', 1]
         ]
     ));

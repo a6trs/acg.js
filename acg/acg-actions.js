@@ -3,6 +3,34 @@ acg.ac = acg.ac || {};
 var cc = cc || {};
 
 // Some custom actions
+// Changes the string of a label.
+acg.ac.ChangeString = cc.ActionInstant.extend({
+    _str: '',
+    ctor: function(str) {
+        cc.FiniteTimeAction.prototype.ctor.call(this);
+        this._str = '';
+		str !== undefined && this.initWithString(str);
+    },
+    initWithString: function (str) {
+        this._str = str;
+        return true;
+    },
+    update: function (dt) {
+        if (this.target instanceof cc.LabelTTF)
+            this.target.setString(this._str);
+    },
+    reverse: function () {
+        console.log('acg.ac.ChangeString.reverse(): Not supported');
+    },
+    clone: function () {
+        var action = new acg.ac.ChangeString();
+        action.initWithString(this._str);
+        return action;
+    }
+});
+acg.ac.changeString = function (str) {
+    return new acg.ac.ChangeString(str);
+};
 // Makes the string of a LabelTTF gradually increase/decrease
 //   until it reaches a given number.
 // The initial string will be parsed as a number.
@@ -39,7 +67,7 @@ acg.ac.GoNumber = cc.ActionInterval.extend({
         }
     },
     reverse: function () {
-        console.log('acg.ac.GoNumber.reverse(): Not supported');
+        console.log('acg.ac.GoNumber.reverse(): Should be overridden');
     }
 });
 acg.ac.goNumber = function (duration, targetNum) {
@@ -133,12 +161,13 @@ acg.ac.action_map = {
     'ease-cubic-out': cc.EaseCubicActionOut.create,
     'ease-cubic-in-out': cc.EaseCubicActionInOut.create,
     // Extra ones
-    'go-number': acg.ac.goNumber
+    'go-number': acg.ac.goNumber,
+    'change-text': acg.ac.changeString
 };
 
 acg.ac.parse = function (a) {
     for (var i = 1; i < a.length; i++) {
-        if (typeof(a[i][0]) === 'string') {
+        if (typeof(a[i]) !== 'string' && typeof(a[i][0]) === 'string') {
             // a[i] is an array representing an action, parse it
             a[i] = acg.ac.parse(a[i]);
         }
