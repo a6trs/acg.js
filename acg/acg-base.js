@@ -41,8 +41,8 @@ acg.matter = function (id) {
 
 acg.apply_attr = function (s, attr) {
     var size = cc.director.getVisibleSize();
-    if (!(attr.x && attr.y)) attr.x = attr.y = 0.5;
-    if (!(attr.ax && attr.ay)) attr.ax = attr.ay = 0.5;
+    if (attr.x == undefined && attr.y == undefined) attr.x = attr.y = 0.5;
+    if (attr.ax == undefined && attr.ay == undefined) attr.ax = attr.ay = 0.5;
     s.setNormalizedPosition(attr.x, attr.y);
     // FIXME: attr.ax and attr.ay don't work for layers (rects)
     s.setAnchorPoint(attr.ax, attr.ay);

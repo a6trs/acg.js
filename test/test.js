@@ -1,4 +1,5 @@
 var acg = acg || {};
+acg.ext = acg.ext || {};
 
 var initStage = function () {
     // 3s -> 8.5s
@@ -37,7 +38,7 @@ var initStage = function () {
         ]
     ));
     // 0s -> 2s
-    acg.put(0, acg.img('h.png',
+    acg.put(0.01, acg.img('h.png',
         {x: 0.3, y: 0.5, scale: 0.24},
         ['fade-out', 2]
     ));
@@ -48,13 +49,16 @@ var initStage = function () {
     ));
     acg.put(3, acg.text(
         {x: 0.5, y: 0.5, fontsize: 30, text: 'Hi, there',
-            colour: [255, 255, 0], zorder: 100},
+            colour: [64, 255, 0], zorder: 100},
         ['ease-sine-out', ['move-by', 2, acg.p(0, 0.2)]]
     ));
     acg.put(1, acg.rect(
         {x: 0.4, y: 0.4, width: 0.5, height: 0.3, colour: [128, 128, 192]},
         ['tint-to', 1, 255, 100, 100]
     ));
+    acg.ext.background(3, [255, 255, 99]);
+    acg.ext.background(6, [128, 255, 128]);
+    acg.ext.background_commit();
     acg.commit();
     acg.travel(0);
 };

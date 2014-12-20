@@ -33,6 +33,14 @@ acg.find = function (a, t) {
     return i;
 };
 
+acg.tot_time = function () {
+    var max = -1;
+    acg._flow_tmp.forEach(function (f) {
+        if (f.time > max) max = f.time;
+    });
+    return max;
+};
+
 acg.commit = function () {
     // All algorithmic stuff
     // Sort the arrays
