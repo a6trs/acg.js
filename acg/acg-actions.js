@@ -2,6 +2,50 @@ var acg = acg || {};
 acg.ac = acg.ac || {};
 var cc = cc || {};
 
+// Some custom actions
+// Makes the string of a LabelTTF gradually increase/decrease
+//   until it reaches a given number.
+// The initial string will be parsed as a number.
+acg.ac.GoNumber = cc.ActionInterval.extend({
+    _targetNum: 0,
+    _startNum: 0,
+    ctor: function (duration, targetNum) {
+        cc.ActionInterval.prototype.ctor.call(this);
+		targetNum !== undefined && this.initWithDuration(duration, targetNum);
+    },
+    initWithDuration: function (duration, targetNum) {
+        if (cc.ActionInterval.prototype.initWithDuration.call(this, duration)) {
+            this._targetNum = targetNum;
+            return true;
+        }
+        return false;
+    },
+    clone: function () {
+        var action = new acg.ac.GoNumber();
+        this._cloneDecoration(action);
+        action.initWithDuration(this._duration, this._targetNum);
+        return action;
+    },
+    startWithTarget: function (target) {
+        if (!(target instanceof cc.LabelTTF)) return;
+        cc.ActionInterval.prototype.startWithTarget.call(this, target);
+        this._startNum = parseInt(target.getString(), 10);
+    },
+    update: function (dt) {
+        dt = this._computeEaseTime(dt);
+        if (this.target) {
+            var n = this._startNum * (1 - dt) + this._targetNum * dt;
+            this.target.setString(Math.floor(n).toString());
+        }
+    },
+    reverse: function () {
+        console.log('acg.ac.GoNumber.reverse(): Not supported');
+    }
+});
+acg.ac.goNumber = function (duration, targetNum) {
+    return new acg.ac.GoNumber(duration, targetNum);
+};
+
 // Use tools/actionlist_gen.html to generate this.
 
 // Removed:
@@ -87,7 +131,9 @@ acg.ac.action_map = {
     'ease-circle-in-out': cc.EaseCircleActionInOut.create,
     'ease-cubic-in': cc.EaseCubicActionIn.create,
     'ease-cubic-out': cc.EaseCubicActionOut.create,
-    'ease-cubic-in-out': cc.EaseCubicActionInOut.create
+    'ease-cubic-in-out': cc.EaseCubicActionInOut.create,
+    // Extra ones
+    'go-number': acg.ac.goNumber
 };
 
 acg.ac.parse = function (a) {

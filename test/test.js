@@ -56,6 +56,16 @@ var initStage = function () {
         {x: 0.4, y: 0.4, width: 0.5, height: 0.3, colour: [128, 128, 192]},
         ['tint-to', 1, 255, 100, 100]
     ));
+    acg.put(1, acg.text(
+        {x: 0.6, y: 0.7, fontsize: 36, text: '400',
+            colour: [64, 255, 255], zorder: 100},
+        ['+',
+            ['delay', 1],
+            ['ease-cubic-out', ['go-number', 2, 800]],
+            ['ease-cubic-in-out', ['go-number', 2, 0]],
+            ['delay', 1]
+        ]
+    ));
     acg.ext.background(3, [255, 255, 99]);
     acg.ext.background(6, [128, 255, 128]);
     acg.ext.background_commit();
