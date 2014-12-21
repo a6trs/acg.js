@@ -1,15 +1,11 @@
 var acg = acg || {};
 var cc = cc || {};
 
-acg.bootstrap = function (elem, callback) {
+acg.bootstrap = function (elem, aspect_ratio, callback) {
     'use strict';
     cc.game.onStart = function () {
         cc.view.adjustViewPort(true);
-        if (cc.sys.isMobile) {
-            cc.view.setDesignResolutionSize(480, 320, cc.ResolutionPolicy.FIXED_WIDTH);
-        } else {
-            cc.view.setDesignResolutionSize(480, 320, cc.ResolutionPolicy.SHOW_ALL);
-        }
+        cc.view.setDesignResolutionSize(320 * aspect_ratio, 320, cc.ResolutionPolicy.SHOW_ALL);
         cc.view.resizeWithBrowserSize(true);
         cc.director.setDisplayStats(true);
         cc.director.runScene(new cc.Scene());
