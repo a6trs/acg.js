@@ -75,4 +75,4 @@ var initStage = function () {
     acg.travel(0);
 };
 
-acg.bootstrap('game_canvas', initStage);
+acg.bootstrap('game_canvas', 3 / 2, initStage);
