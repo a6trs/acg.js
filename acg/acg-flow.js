@@ -50,6 +50,7 @@ acg.commit = function () {
     // Sort the arrays
     acg._flow = [];
     acg.sort(acg._flow_tmp);
+    // Merge events happening at the same time
     var last_time = -1;
     for (var i = 0; i < acg._flow_tmp.length; i++) {
         var cur = acg._flow_tmp[i];
@@ -60,6 +61,7 @@ acg.commit = function () {
             last_time = cur.time;
         }
     }
+    // Post-process: calculate whether each matter is present at a given time
     acg._flow[-1] = {present: []};
     for (var i = 0; i < acg._flow.length; i++) {
         var cur = acg._flow[i];
@@ -80,17 +82,18 @@ acg.commit = function () {
         }
         acg._flow[i] = cur;
     }
-    console.log();
 };
 
+// Seek to any time.
 acg.travel = function (time) {
+    // Remove all present matters
     var idx = acg.find(acg._flow, acg.time);
     if (idx !== -1) {
         acg._flow[idx].present.forEach(function (id) {
             acg.sweep(id);
-            console.log('sweep: ' + id);
         });
     }
+    // Place all matters that should be present
     idx = acg.find(acg._flow, time);
     if (idx !== -1) {
         acg._flow[idx].present.forEach(function (id) {
@@ -107,17 +110,17 @@ acg.update = function (dt) {
     acg.time += dt * acg.timescale;
     var idx = acg.find(acg._flow, acg.time);
     if (acg._last_flow_idx !== idx) {
+        // New fellows are coming or present guys are leaving
         acg._flow[idx].events.forEach(function (e) {
             if (e.type === acg.EVENT_LEAVE) {
                 acg.sweep(e.id);
-                console.log('flow-sweep: ' + e.id);
             } else {
                 acg.place(e.id);
-                console.log('flow-place: ' + e.id);
             }
         });
         acg._last_flow_idx = idx;
     }
+    // Update all actions
     acg._flow[idx].present.forEach(function (id) {
         var m = acg.matters[id];
         m._acg_action.step(acg.time - m._acg_entertime - m._acg_action.getElapsed());
