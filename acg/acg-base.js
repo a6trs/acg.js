@@ -12,7 +12,9 @@ acg.ALILGN_BOTTOM = cc.VERTICAL_TEXT_ALIGNMENT_BOTTOM;
 
 acg.matters = [];
 
-acg.time = 0;
+// All function to be called when initialized can be put here
+// They will be called in acg.bootstrap (acg-disp.js)
+acg._init_callbacks = [];
 
 acg.place = function (id) {
     var s = acg.matters[id];

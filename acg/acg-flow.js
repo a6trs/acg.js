@@ -7,6 +7,9 @@ acg._flow_tmp = [];
 // The index found in flow in the last update() call
 acg._last_flow_idx = -1;
 
+acg.time = 0;
+acg.paused = true;
+
 acg.put = function (time, id) {
     acg.matters[id]._acg_entertime = time;
     acg._flow_tmp.push({time: time, type: acg.EVENT_ENTER, id: id});
@@ -95,8 +98,8 @@ acg.travel = function (time) {
     }
     acg._last_flow_idx = acg.find(acg._flow, time);
     acg.time = time;
-    cc.director.getRunningScene().update = acg.update;
-    cc.director.getRunningScene().scheduleUpdate();
+    acg.update(0);  // Redraw the whole stage
+    acg.update(0);  // It **has** to be done twice - why?
 };
 
 acg.update = function (dt) {
@@ -119,3 +122,22 @@ acg.update = function (dt) {
         m._acg_action.step(acg.time - m._acg_entertime - m._acg_action.getElapsed());
     });
 };
+
+acg.pause = function () {
+    if (!acg.paused) {
+        acg.paused = true;
+        cc.director.getRunningScene().unscheduleUpdate();
+    }
+};
+
+acg.resume = function () {
+    if (acg.paused) {
+        acg.paused = false;
+        cc.director.getRunningScene().scheduleUpdate();
+    }
+};
+
+acg._init_callbacks.push(function () {
+    cc.director.getRunningScene().update = acg.update;
+    acg.resume();
+});

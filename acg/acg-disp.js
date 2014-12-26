@@ -12,12 +12,12 @@ acg.bootstrap = function (elem, aspect_ratio, callback) {
     };
     cc.game.run(elem);
     // Wait until the director is ready, and then call the function
-    if (callback) {
-        var timer = setInterval(function () {
-            if (cc.director && cc.director.getRunningScene()) {
-                clearInterval(timer);
-                callback();
-            }
-        }, 300);
-    }
+    var timer = setInterval(function () {
+        if (cc.director && cc.director.getRunningScene()) {
+            clearInterval(timer);
+            if (callback) callback();
+            // Call all function registered
+            acg._init_callbacks.forEach(function (e) { e(); });
+        }
+    }, 300);
 };
