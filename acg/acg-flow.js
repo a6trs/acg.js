@@ -9,6 +9,7 @@ acg._last_flow_idx = -1;
 
 acg.time = 0;
 acg.paused = true;
+acg.timescale = 1;
 
 acg.put = function (time, id) {
     acg.matters[id]._acg_entertime = time;
@@ -103,7 +104,7 @@ acg.travel = function (time) {
 };
 
 acg.update = function (dt) {
-    acg.time += dt;
+    acg.time += dt * acg.timescale;
     var idx = acg.find(acg._flow, acg.time);
     if (acg._last_flow_idx !== idx) {
         acg._flow[idx].events.forEach(function (e) {
@@ -135,6 +136,12 @@ acg.resume = function () {
         acg.paused = false;
         cc.director.getRunningScene().scheduleUpdate();
     }
+};
+
+acg.set_timescale = function (ts) {
+    // TODO: defensive argument type check.
+    // XXX: Should negative timescales be allowed?
+    acg.timescale = ts;
 };
 
 acg._init_callbacks.push(function () {
