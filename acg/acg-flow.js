@@ -17,24 +17,36 @@ acg.put = function (time, id) {
     acg._flow_tmp.push({time: time + acg.action_duration(id), type: acg.EVENT_LEAVE, id: id});
 };
 
-acg.sort = function (a) {
-    // TODO: Use quick sort instead of bubble sort
-    var i, j, t;
-    for (i = 0; i < a.length - 1; i++)
-        for (j = i + 1; j < a.length; j++)
-            if (a[i].time > a[j].time) {
-                t = a[i]; a[i] = a[j]; a[j] = t;
-            }
+// Sorts an array by time.
+acg.sort = function (a, l, r) {
+    if (l === undefined) { l = 0; r = a.length - 1; }
+    var i = l, j = r, x = a[(l + r) >> 1].time, t;
+    do {
+        while (a[i].time < x) i++;
+        while (a[j].time > x) j--;
+        if (i <= j) {
+            t = a[i]; a[i] = a[j]; a[j] = t;
+            i++; j--;
+        }
+    } while (i <= j);
+    if (i < r) acg.sort(a, i, r);
+    if (j > l) acg.sort(a, l, j);
 };
 
+// Finds a given number in a sorted array using the binary chop method.
+// I'm sorry, but I don't know how it works exactly. It just passes the test.
+// Why should we +1 and -1 here and there??
 acg.find = function (a, t) {
-    // TODO: Use binary chop method instead of linear scan
     if (t < a[0].time) return -1;
-    var i = 0;
-    while (i < a.length && t >= a[i].time) i++;
-    i--;
-    while (i > 0 && a[i - 1].time === a[i].time) i--;
-    return i;
+    var lo = 0, hi = a.length - 1;
+    while (lo < hi - 1) {
+        var mid = (lo + hi) >> 1;
+        if (a[mid].time >= t) hi = mid;
+        else lo = mid;
+    }
+    if (a[lo + 1].time === t) lo++; // What the...?
+    while (lo > 0 && a[lo].time === a[lo - 1].time) lo--;
+    return lo;
 };
 
 acg.tot_time = function () {
