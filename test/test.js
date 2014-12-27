@@ -72,6 +72,7 @@ var initStage = function () {
     acg.ext.background(6, [128, 255, 128]);
     acg.ext.background_commit();
     acg.commit();
+    acg.ext.cp_enable();
     acg.travel(0);
 };
 
