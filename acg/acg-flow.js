@@ -10,6 +10,7 @@ acg._last_flow_idx = -1;
 acg.time = 0;
 acg.paused = true;
 acg.timescale = 1;
+acg._tottime = 0;   // only calculated after a commit() call
 
 acg.put = function (time, id) {
     acg.matters[id]._acg_entertime = time;
@@ -50,6 +51,7 @@ acg.find = function (a, t) {
 };
 
 acg.tot_time = function () {
+    if (acg._tottime > 0) return acg._tottime;
     var max = -1;
     acg._flow_tmp.forEach(function (f) {
         if (f.time > max) max = f.time;
@@ -62,6 +64,7 @@ acg.commit = function () {
     // Sort the arrays
     acg._flow = [];
     acg.sort(acg._flow_tmp);
+    acg._tottime = acg._flow_tmp[acg._flow_tmp.length - 1];
     // Merge events happening at the same time
     var last_time = -1;
     for (var i = 0; i < acg._flow_tmp.length; i++) {
