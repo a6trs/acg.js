@@ -16,6 +16,7 @@ acg.ext.cp_playbtn = function (callback) {
     var size = cc.director.getVisibleSize();
     var btn = cc.DrawNode.create();
     var playbtn_r = size.height * 0.1;
+    btn.setAnchorPoint(cc.p(0, 0));
     btn._cp_paused = false;
     btn._cp_callback = callback;
     btn.drawPlay = function () {
@@ -66,6 +67,25 @@ acg.ext.cp_playbtn = function (callback) {
     return btn;
 };
 
+acg.ext.cp_timeline = function (callback) {
+    var size = cc.director.getVisibleSize();
+    var tl = cc.DrawNode.create();
+    var tl_w = size.width * 0.72;
+    var tl_h = size.height * 0.02;
+    tl.setAnchorPoint(cc.p(1, 0.5));
+    tl._cp_callback = callback;
+    tl.drawSegment(cc.p(tl_h, 0), cc.p(tl_w - tl_h, 0),
+        tl_h, cc.color(255, 255, 255, 128));
+    tl.setContentSize(cc.size(tl_w, tl_h));
+    tl.setCascadeOpacityEnabled(true);
+    var tl_thumb = cc.DrawNode.create();
+    var thumb_r = size.height * 0.04;
+    tl_thumb.drawDot(cc.p(0, 0), thumb_r, cc.color(255, 255, 255, 192));
+    tl_thumb.setNormalizedPosition(cc.p(0.4, 0));
+    tl.addChild(tl_thumb);
+    return tl;
+};
+
 acg.ext.cp_enable = function () {
     cc.director.setDisplayStats(false);
     // Create the touch listener layer
@@ -80,9 +100,15 @@ acg.ext.cp_enable = function () {
     });
     acg.ext._cp_ctrls[0] = btn;
     btn.setNormalizedPosition(cc.p(0.02, 0));
-    btn.setAnchorPoint(cc.p(0, 0));
     btn.setOpacity(0);
     cp.addChild(btn);
+    var tl = acg.ext.cp_timeline(function (time) {
+        acg.travel(time);
+    });
+    acg.ext._cp_ctrls[1] = tl;
+    tl.setNormalizedPosition(cc.p(0.95, 0.08));
+    tl.setOpacity(0);
+    cp.addChild(tl);
 
     cc.eventManager.addListener({
         event: cc.EventListener.TOUCH_ONE_BY_ONE,
@@ -97,10 +123,18 @@ acg.ext.cp_enable = function () {
                     ['move-to', 0.15, cc.p(0.02, 0)],
                     ['fade-out', 0.15]
                 ]));
+                tl.runAction(acg.ac.parse(['//',
+                    ['move-to', 0.15, cc.p(0.95, 0.08)],
+                    ['fade-out', 0.15]
+                ]));
             } else {
                 acg.ext._cp_ctrls_showed = true;
                 btn.runAction(acg.ac.parse(['//',
                     ['move-to', 0.15, cc.p(0.02, 0.02)],
+                    ['fade-in', 0.15]
+                ]));
+                tl.runAction(acg.ac.parse(['//',
+                    ['move-to', 0.15, cc.p(0.95, 0.1)],
                     ['fade-in', 0.15]
                 ]));
             }
