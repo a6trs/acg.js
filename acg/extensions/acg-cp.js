@@ -140,6 +140,10 @@ acg.ext.cp_enable = function () {
     // Update the progress of the timeline regularly
     cc.director.getRunningScene().schedule(function () {
         tl.setProgress(acg.time / acg.tot_time());
+        if (acg.paused) {
+            btn.drawPlay();
+            btn._cp_paused = true;
+        }
     }, 0);
 
     cc.eventManager.addListener({

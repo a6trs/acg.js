@@ -123,6 +123,10 @@ acg.travel = function (time) {
 
 acg.update = function (dt) {
     acg.time += dt * acg.timescale;
+    if (acg.time > acg.tot_time()) {
+        acg.time = acg.tot_time();
+        acg.pause();
+    }
     var idx = acg.find(acg._flow, acg.time);
     if (acg._last_flow_idx !== idx) {
         // New fellows are coming or present guys are leaving
