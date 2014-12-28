@@ -97,8 +97,10 @@ acg.ext.cp_timeline = function (callback) {
         event: cc.EventListener.TOUCH_ONE_BY_ONE,
         swallowTouches: true,
         onTouchBegan: function (touch, event) {
-            return (acg.ext._cp_ctrls_showed
-                && acg.ext.is_touch_in_content(touch, event));
+            var b = acg.ext._cp_ctrls_showed
+                && acg.ext.is_touch_in_content(touch, event);
+            if (b) this.onTouchMoved(touch, event);
+            return b;
         },
         onTouchMoved: function (touch, event) {
             if (!acg.ext.is_touch_in_content(touch, event)) return;
