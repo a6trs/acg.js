@@ -8,7 +8,7 @@ acg.ext._words_id = null;
 acg.ext.words = function (time, text) {
     // We should put a space here if an empty string is passed,
     // or there will be some problems
-    var r = {time: time, text: text === '' ? ' ' : text};
+    var r = {time: time + acg._cur_offset, text: text === '' ? ' ' : text};
     acg.ext._words_flow.push(r);
 };
 

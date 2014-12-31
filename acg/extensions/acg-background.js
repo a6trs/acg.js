@@ -5,7 +5,7 @@ acg.ext._background_flow = [];
 acg.ext._background_id = null;
 
 acg.ext.background = function (time, colour, dur) {
-    var r = {time: time, colour: colour, duration: dur || 0.2};
+    var r = {time: time + acg._cur_offset, colour: colour, duration: dur || 0.2};
     acg.ext._background_flow.push(r);
 };
 
