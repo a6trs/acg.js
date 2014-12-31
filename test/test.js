@@ -3,6 +3,8 @@ acg.ext = acg.ext || {};
 
 var initStage = function () {
     // 3s -> 8.5s
+    acg.begin_offset(2);    // OFFSET 1
+    acg.begin_offset(5);    // OFFSET 2
     acg.put(3, acg.img('h.png',
         {x: 0.618, y: 0.618, ax: 1, ay: 1, scale: 0.3, zorder: 3},
         ['+',
@@ -26,6 +28,7 @@ var initStage = function () {
             ]*/
         ]
     ));
+    acg.end_offset();   // OFFSET 2
     // 1s -> 9.2s
     acg.put(1, acg.img('h.png',
         {x: 0.5, y: 0.5, scale: 0.18, opacity: 0.6, zorder: 10},
@@ -71,6 +74,7 @@ var initStage = function () {
     acg.ext.background(3, [255, 255, 99]);
     acg.ext.background(6, [128, 255, 128]);
     acg.ext.background_commit();
+    acg.end_offset();   // OFFSET 1
     acg.commit();
     acg.ext.cp_enable();
     acg.travel(0);
