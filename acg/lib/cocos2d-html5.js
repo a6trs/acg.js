@@ -790,7 +790,7 @@ cc._initSys = function (config, CONFIG_KEY) {
     var renderType = cc._RENDER_TYPE_WEBGL;
     var tempCanvas = cc.newElement("Canvas");
     cc._supportRender = true;
-    var notSupportGL = !window.WebGLRenderingContext || browserSupportWebGL.indexOf(sys.browserType) == -1 || osSupportWebGL.indexOf(sys.os) == -1;
+    var notSupportGL = !window.WebGLRenderingContext || browserSupportWebGL.indexOf(sys.browserType) == -1;// || osSupportWebGL.indexOf(sys.os) == -1;
     if (userRenderMode === 1 || (userRenderMode === 0 && notSupportGL) || (location.origin == "file://")) {
         renderType = cc._RENDER_TYPE_CANVAS;
     }
@@ -18482,6 +18482,7 @@ cc.tiffReader = {
         0x000C: 'DOUBLE'
     }
 };
+//////////////// PARTICLES-BASE BEGIN ////////////////
 cc.Particle = function (pos, startPos, color, deltaColor, size, deltaSize, rotation, deltaRotation, timeToLive, atlasIndex, modeA, modeB) {
     this.pos = pos ? pos : cc.p(0,0);
     this.startPos = startPos ? startPos : cc.p(0,0);
@@ -19878,6 +19879,7 @@ if(cc._renderType === cc._RENDER_TYPE_CANVAS && !cc.sys._supportCanvasNewBlendMo
         }
         return null
     };
+//////////////// PARTICLES-BASE END ////////////////
 _p.opacityModifyRGB;
 cc.defineGetterSetter(_p, "opacityModifyRGB", _p.isOpacityModifyRGB, _p.setOpacityModifyRGB);
 _p.batchNode;
@@ -19962,6 +19964,7 @@ cc.ParticleSystem.MODE_RADIUS = 1;
 cc.ParticleSystem.TYPE_FREE = 0;
 cc.ParticleSystem.TYPE_RELATIVE = 1;
 cc.ParticleSystem.TYPE_GROUPED = 2;
+//////////////// PARTICLES BEGIN ////////////////
 cc.ParticleFire = cc.ParticleSystem.extend({
     ctor:function () {
         cc.ParticleSystem.prototype.ctor.call(this, (cc._renderType === cc._RENDER_TYPE_WEBGL) ? 300 : 150);
@@ -20658,6 +20661,7 @@ cc.ParticleBatchNode = cc.Node.extend({
             this._rendererCmd = new cc.ParticleBatchNodeRenderCmdWebGL(this);
     }
 });
+//////////////// PARTICLES END ////////////////
 var _p = cc.ParticleBatchNode.prototype;
 _p.texture;
 cc.defineGetterSetter(_p, "texture", _p.getTexture, _p.setTexture);
