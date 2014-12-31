@@ -3,7 +3,7 @@ var actionList = function (cc_code) {
     var ret = '';
     a.forEach(function (s) {
         var r = s.match(/^cc.[a-z]+\w+/);
-        if (r && r[0] != 'cc.log') {
+        if (r && r[0] != 'cc.log' && r[0] != 'cc.action') {
             var key = r[0].substr(3);
             var splits = key.split(/[A-Z]/g);
             var matches = key.match(/[A-Z]/g);

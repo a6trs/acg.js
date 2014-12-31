@@ -28,8 +28,8 @@ static const char *ACTION_SECT_END_MARK =
 
 int main()
 {
-    FILE *in = fopen("cocos2d-js-v3.1.js", "r");
-    FILE *out = fopen("cocos2d-js-v3.1.modified.js", "w");
+    FILE *in = fopen("cocos2d-html5.js", "r");
+    FILE *out = fopen("cocos2d-html5.modified.js", "w");
     if (!in) { usage(); return 0; }
     char s[1024];
     unsigned short add_normpos = 1;
@@ -126,6 +126,6 @@ void usage()
     printf("  3. Replace get/setPosition[X/Y]() calls in all actions\n");
     printf("     with get/setNormalizedPosition[X/Y]() calls.\n\n");
     printf("After you downloaded Javascript file for Cocos2d-HTML5,\n");
-    printf("Place the file [cocos2d-js-v3.1.js]\n");
+    printf("Place the file [cocos2d-html5.js]\n");
     printf("in the same folder as this program and run it.\n\n");
 }
