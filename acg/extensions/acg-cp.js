@@ -119,7 +119,7 @@ acg.ext.cp_enable = function () {
     // Create the touch listener layer
     var cp = cc.Layer.create();
     acg.ext._cp_layer = cp;
-    cc.director.getRunningScene().addChild(cp, 1000);
+    cc.director.getRunningScene().addChild(cp, 100012138);
 
     // Create the controls
     var size = cc.director.getVisibleSize();
