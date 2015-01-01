@@ -25,8 +25,7 @@ acg.ext.words_commit = function () {
     }
     acg.ext._words_bg = acg.rect(
         {x: 0, y: 0, colour: [255, 255, 255], opacity: 0.4,
-            width: 1, height: 40 / cc.director.getVisibleSize().height,
-            zorder: 10012137},
+            width: 1, height: 40 / acg.height, zorder: 10012137},
         ['delay', acg.tot_time()]
     );
     acg.ext._words_id = acg.text(

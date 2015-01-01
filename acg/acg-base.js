@@ -19,7 +19,7 @@ acg._init_callbacks = [];
 acg.place = function (id) {
     var s = acg.matters[id];
     if (s) {
-        cc.director.getRunningScene().addChild(s);
+        acg.scene.addChild(s);
         acg.apply_attr(s, s._acg_attr);
         if (s._acg_action) s._acg_action.startWithTarget(s);
     }
@@ -28,7 +28,7 @@ acg.place = function (id) {
 acg.sweep = function (id) {
     var s = acg.matters[id];
     if (s) {
-        cc.director.getRunningScene().removeChild(s, false);
+        acg.scene.removeChild(s, false);
     }
 };
 
@@ -42,7 +42,6 @@ acg.matter = function (id) {
 };
 
 acg.apply_attr = function (s, attr) {
-    var size = cc.director.getVisibleSize();
     if (attr.x == undefined && attr.y == undefined) attr.x = attr.y = 0.5;
     if (attr.ax == undefined && attr.ay == undefined) attr.ax = attr.ay = 0.5;
     s.setNormalizedPosition(attr.x, attr.y);
@@ -72,6 +71,6 @@ acg.apply_attr = function (s, attr) {
     } else if (s instanceof cc.Layer) {
         attr.width = attr.width || 1;
         attr.height = attr.height || 1;
-        s.changeWidthAndHeight(attr.width * size.width, attr.height * size.height);
+        s.changeWidthAndHeight(attr.width * acg.width, attr.height * acg.height);
     }
 };

@@ -162,14 +162,14 @@ acg.update = function (dt) {
 acg.pause = function () {
     if (!acg.paused) {
         acg.paused = true;
-        cc.director.getRunningScene().unscheduleUpdate();
+        acg.scene.unscheduleUpdate();
     }
 };
 
 acg.resume = function () {
     if (acg.paused) {
         acg.paused = false;
-        cc.director.getRunningScene().scheduleUpdate();
+        acg.scene.scheduleUpdate();
     }
 };
 
@@ -180,6 +180,6 @@ acg.set_timescale = function (ts) {
 };
 
 acg._init_callbacks.push(function () {
-    cc.director.getRunningScene().update = acg.update;
+    acg.scene.update = acg.update;
     acg.resume();
 });

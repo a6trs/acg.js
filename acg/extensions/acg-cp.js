@@ -21,9 +21,8 @@ acg.ext.touch_swiping = function (touch) {
 };
 
 acg.ext.cp_playbtn = function (callback) {
-    var size = cc.director.getVisibleSize();
     var btn = cc.DrawNode.create();
-    var playbtn_r = size.height * 0.1;
+    var playbtn_r = acg.height * 0.1;
     btn.setAnchorPoint(cc.p(0, 0));
     btn._cp_paused = false;
     btn._cp_callback = callback;
@@ -77,11 +76,10 @@ acg.ext.cp_playbtn = function (callback) {
 };
 
 acg.ext.cp_timeline = function (callback) {
-    var size = cc.director.getVisibleSize();
     var tl = cc.DrawNode.create();
-    var tl_w = size.width * 0.72;
-    var tl_h = size.height * 0.08;
-    var tl_r = size.height * 0.012;
+    var tl_w = acg.width * 0.72;
+    var tl_h = acg.height * 0.08;
+    var tl_r = acg.height * 0.012;
     tl.setAnchorPoint(cc.p(1, 0.5));
     tl._cp_callback = callback;
     tl.drawSegment(cc.p(tl_r, tl_h / 2), cc.p(tl_w - tl_r, tl_h / 2),
@@ -92,7 +90,7 @@ acg.ext.cp_timeline = function (callback) {
     tl.setContentSize(cc.size(tl_w, tl_h));
     tl.setCascadeOpacityEnabled(true);
     var tl_thumb = cc.DrawNode.create();
-    var thumb_r = size.height * 0.03;
+    var thumb_r = acg.height * 0.03;
     tl_thumb.drawDot(cc.p(0, 0), thumb_r, cc.color(255, 255, 255, 192));
     tl_thumb.setNormalizedPosition(cc.p(0.4, 0.5));
     tl._cp_thumb = tl_thumb;
@@ -142,10 +140,9 @@ acg.ext.cp_enable = function () {
     // Create the touch listener layer
     var cp = cc.Layer.create();
     acg.ext._cp_layer = cp;
-    cc.director.getRunningScene().addChild(cp, 100012138);
+    acg.scene.addChild(cp, 100012138);
 
     // Create the controls
-    var size = cc.director.getVisibleSize();
     var btn = acg.ext.cp_playbtn(function (paused) {
         if (paused) acg.pause(); else acg.resume();
     });
@@ -161,7 +158,7 @@ acg.ext.cp_enable = function () {
     tl.setOpacity(0);
     cp.addChild(tl);
     // Update the progress of the timeline regularly
-    cc.director.getRunningScene().schedule(function () {
+    acg.scene.schedule(function () {
         tl.setProgress(acg.time / acg.tot_time());
         btn._cp_paused = acg.paused;
         if (acg.paused) btn.drawPlay(); else btn.drawPause();
