@@ -81,7 +81,6 @@ acg.ac.goNumber = function (duration, targetNum) {
 // * targeted-action
 // * action-ease
 // * remove-self
-// * call-func
 // * animate
 // * all 'Action's in names
 // TODO: Make actionlist_gen do this automatically.
@@ -125,6 +124,7 @@ acg.ac.action_map = {
     'tint-by': cc.tintBy,
     'delay': cc.delayTime,  // renamed
     'reverse': cc.reverseTime,  // renamed
+    'call-func': cc.callFunc,
     'ease-rate': cc.EaseRateAction.create,
     'ease-in': cc.EaseIn.create,
     'ease-out': cc.EaseOut.create,
