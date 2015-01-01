@@ -5,12 +5,20 @@ acg.ext = acg.ext || {};
 acg.ext._cp_layer = null;
 acg.ext._cp_ctrls = [];
 acg.ext._cp_ctrls_showed = false;
+acg.ext._cp_swiping = false;
+// Whether the animation is paused at the time when dragging started
+// Used in both the timeline and the swipe-to-seek functionality
+acg.ext._cp_shouldbepaused = null;
 
 acg.ext.is_touch_in_content = function (touch, event) {
     var p = event.getCurrentTarget().convertTouchToNodeSpace(touch);
     var s = event.getCurrentTarget().getContentSize();
     return !(p.x < 0 || p.x > s.width || p.y < 0 || p.y > s.height);
-}
+};
+
+acg.ext.touch_swiping = function (touch) {
+    return cc.pDistanceSQ(touch.getStartLocation(), touch.getLocation()) > 100;
+};
 
 acg.ext.cp_playbtn = function (callback) {
     var size = cc.director.getVisibleSize();
@@ -58,6 +66,7 @@ acg.ext.cp_playbtn = function (callback) {
         },
         onTouchEnded: function (touch, event) {
             if (!acg.ext.is_touch_in_content(touch, event)) return;
+            // Update image
             var t = event.getCurrentTarget();
             if (t._cp_paused) t.drawPause(); else t.drawPlay();
             t._cp_paused = !t._cp_paused;
@@ -91,6 +100,10 @@ acg.ext.cp_timeline = function (callback) {
 
     tl.setProgress = function (p) {
         this._cp_thumb.setNormalizedPositionX(p);
+        this._cp_callback(p);
+    };
+    tl.getProgress = function (p) {
+        return this._cp_thumb.getNormalizedPositionX();
     };
 
     cc.eventManager.addListener({
@@ -99,16 +112,26 @@ acg.ext.cp_timeline = function (callback) {
         onTouchBegan: function (touch, event) {
             var b = acg.ext._cp_ctrls_showed
                 && acg.ext.is_touch_in_content(touch, event);
-            if (b) this.onTouchMoved(touch, event);
+            if (b) {
+                this.onTouchMoved(touch, event);
+                if (acg.ext._cp_shouldbepaused === null)
+                    acg.ext._cp_shouldbepaused = acg.paused;
+                acg.pause();
+            }
             return b;
         },
         onTouchMoved: function (touch, event) {
             if (!acg.ext.is_touch_in_content(touch, event)) return;
+            // Update thumb's position
             var t = event.getCurrentTarget();
             var p = t.convertTouchToNodeSpace(touch);
             var time = p.x / t.getContentSize().width;
             t.setProgress(time);
-            t._cp_callback(time);
+        },
+        onTouchEnded: function () {
+            // If not paused at the beginning of dragging, we resume it now
+            if (!acg.ext._cp_shouldbepaused) acg.resume();
+            acg.ext._cp_shouldbepaused = null;
         }
     }, tl);
     return tl;
@@ -140,20 +163,31 @@ acg.ext.cp_enable = function () {
     // Update the progress of the timeline regularly
     cc.director.getRunningScene().schedule(function () {
         tl.setProgress(acg.time / acg.tot_time());
-        if (acg.paused) {
-            btn.drawPlay();
-            btn._cp_paused = true;
-        }
+        btn._cp_paused = acg.paused;
+        if (acg.paused) btn.drawPlay(); else btn.drawPause();
     }, 0);
 
     cc.eventManager.addListener({
         event: cc.EventListener.TOUCH_ONE_BY_ONE,
         swallowTouches: true,
         onTouchBegan: function (touch, event) {
+            acg.ext._cp_swiping = false;
+            if (!touch._startPoint) touch._startPoint = touch.getLocation();
             return true;
         },
+        onTouchMoved: function (touch, event) {
+            if (!acg.ext._cp_swiping && acg.ext.touch_swiping(touch)) {
+                acg.ext._cp_swiping = true;
+            }
+            if (acg.ext._cp_swiping) {
+                if (acg.ext._cp_shouldbepaused === null)
+                    acg.ext._cp_shouldbepaused = acg.paused;
+                acg.pause();
+                tl.setProgress(tl.getProgress() + touch.getDelta().x / 600);
+            }
+        },
         onTouchEnded: function (touch, event) {
-            if (acg.ext._cp_ctrls_showed) {
+            if (!acg.ext._cp_swiping && acg.ext._cp_ctrls_showed) {
                 acg.ext._cp_ctrls_showed = false;
                 btn.runAction(acg.ac.parse(['//',
                     ['move-to', 0.15, cc.p(0.02, 0)],
@@ -163,7 +197,7 @@ acg.ext.cp_enable = function () {
                     ['move-to', 0.15, cc.p(0.95, 0.08)],
                     ['fade-out', 0.15]
                 ]));
-            } else {
+            } else if (!acg.ext._cp_swiping) {
                 acg.ext._cp_ctrls_showed = true;
                 btn.runAction(acg.ac.parse(['//',
                     ['move-to', 0.15, cc.p(0.02, 0.02)],
@@ -173,6 +207,9 @@ acg.ext.cp_enable = function () {
                     ['move-to', 0.15, cc.p(0.95, 0.1)],
                     ['fade-in', 0.15]
                 ]));
+            } else {
+                if (!acg.ext._cp_shouldbepaused) acg.resume();
+                acg.ext._cp_shouldbepaused = null;
             }
         }
     }, cp);
