@@ -71,6 +71,7 @@ acg.apply_attr = function (s, attr) {
     } else if (s instanceof cc.Layer) {
         attr.width = attr.width || 1;
         attr.height = attr.height || 1;
-        s.changeWidthAndHeight(attr.width * acg.width, attr.height * acg.height);
+        s._setWidth(attr.width * acg.width);
+        s._setHeight(attr.height * acg.height);
     }
 };

@@ -37,11 +37,7 @@ acg.ext.stickman = function (attr, action, movements) {
     attr.height = acg.ext.sm_headsize + acg.ext.sm_bodylen + acg.ext.sm_leglen;
     var w = headsize;
     var h = attr.height * acg.height;
-    //var c = cc.Layer.create();  // 'c' stands for container
-    // For debug use
-    var c = cc.LayerColor.create();
-    attr.colour = [0, 0, 0];
-    attr.opacity = 0.3;
+    var c = cc.Layer.create();  // 'c' stands for container
     // Initialize the container first, since we will use its duration later
     acg.init_matter(c, attr, action);
 
