@@ -71,18 +71,14 @@ var initStage = function () {
             ['delay', 1]
         ]
     ));
+    acg.put(5, acg.ext.nametag('ME', 'Subtitle', 0.2, 0.12));
+    acg.put(5, acg.ext.nametag('YOU', 'Subtitle', 0.6, 0.1));
     acg.ext.background(3, [255, 255, 99]);
     acg.ext.background(6, [128, 255, 128]);
-    acg.ext.words(1, 'Hi, this is 1s');
-    acg.ext.words(2, 'Hi, this is 2s');
-    acg.ext.words(3, '');
-    acg.ext.words(4, '4s! * Will disappear at 6s');
-    acg.ext.words(6, '');
     acg.end_offset();   // OFFSET 1
     // Place these commits after flushing all offsets
     // Or undefined behaviours are waiting for you!
     acg.ext.background_commit();
-    acg.ext.words_commit();
     acg.commit();
     acg.ext.cp_enable();
     acg.travel(0);
