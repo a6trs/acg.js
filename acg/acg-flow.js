@@ -15,11 +15,19 @@ acg._tottime = 0;   // only calculated after a commit() call
 acg._offsets = [];
 acg._cur_offset = 0;
 
-acg.put = function (time, id) {
+acg.putOne = function (time, id) {
     time += acg._cur_offset;
     acg.matters[id]._acg_entertime = time;
     acg._flow_tmp.push({time: time, type: acg.EVENT_ENTER, id: id});
     acg._flow_tmp.push({time: time + acg.action_duration(id), type: acg.EVENT_LEAVE, id: id});
+};
+
+acg.put = function (time, ids) {
+    if (isFinite(ids)) acg.putOne(time, ids);
+    else if (typeof ids.length !== 'undefined') {
+        // Does all browsers support forEach?
+        for (var i = 0; i < ids.length; i++) acg.putOne(time, ids[i]);
+    }
 };
 
 acg.begin_offset = function (offset) {

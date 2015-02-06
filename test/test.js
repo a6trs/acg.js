@@ -73,7 +73,15 @@ var initStage = function () {
     ));
     acg.put(5, acg.ext.nametag('ME', 'Subtitle', 0.2, 0.12));
     acg.put(5, acg.ext.nametag('YOU', 'Subtitle', 0.6, 0.1));
-    acg.put(5, acg.ext.stickman({x: 0.5, y: 0.2}, ['delay', 3]));
+    acg.put(5, acg.ext.stickman({x: 0.5, y: 0.2}, ['+',
+        ['move-by', 2, cc.p(-0.2, 0)],
+        ['delay', 3]
+    ], {
+        'leg1': ['rotate-by', 1, 30],
+        'leg2': ['rotate-by', 0.5, -60],
+        'arm1': ['rotate-by', 1, 30],
+        'arm2': ['rotate-by', 1, -30]
+    }));
     acg.ext.background(3, [255, 255, 99]);
     acg.ext.background(6, [128, 255, 128]);
     acg.end_offset();   // OFFSET 1

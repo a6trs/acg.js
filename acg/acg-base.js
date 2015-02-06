@@ -19,7 +19,7 @@ acg._init_callbacks = [];
 acg.place = function (id) {
     var s = acg.matters[id];
     if (s) {
-        acg.scene.addChild(s);
+        s._acg_parent.addChild(s);
         acg.apply_attr(s, s._acg_attr);
         if (s._acg_action) s._acg_action.startWithTarget(s);
     }
@@ -28,7 +28,7 @@ acg.place = function (id) {
 acg.sweep = function (id) {
     var s = acg.matters[id];
     if (s) {
-        acg.scene.removeChild(s, false);
+        s._acg_parent.removeChild(s, false);
     }
 };
 

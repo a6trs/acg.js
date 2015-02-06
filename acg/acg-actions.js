@@ -2,6 +2,8 @@ var acg = acg || {};
 acg.ac = acg.ac || {};
 var cc = cc || {};
 
+acg.emptyAction = cc.ActionInterval.create(0);
+
 // Some custom actions
 // Changes the string of a label.
 acg.ac.ChangeString = cc.ActionInstant.extend({
@@ -166,7 +168,7 @@ acg.ac.action_map = {
 };
 
 acg.ac.parse = function (a) {
-    for (var i = 1; i < a.length; i++) {
+    if (a instanceof Array) for (var i = 1; i < a.length; i++) {
         if (typeof(a[i]) !== 'string' && typeof(a[i][0]) === 'string') {
             // a[i] is an array representing an action, parse it
             a[i] = acg.ac.parse(a[i]);
