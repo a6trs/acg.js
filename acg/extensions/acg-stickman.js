@@ -12,19 +12,24 @@ acg.ext.sm_armpos = 0.1;    // The distance between arms and XXXXX.
 acg.ext.sm_leglen = 0.2;
 acg.ext.sm_strokew = 3;
 
-acg.ext.TAG_SM_HEAD = 1234;
-acg.ext.TAG_SM_LEG1 = 1934;
-acg.ext.TAG_SM_LEG2 = 1984;
-acg.ext.TAG_SM_ARM1 = 1239;
-acg.ext.TAG_SM_ARM2 = 1294;
-
 acg.ext.stickman_oneleg = function (leglen, colour) {
-    var leg = cc.DrawNode.create();
-    leg.drawSegment(
-        cc.p(0, 0), cc.p(0, -leglen),
+    var thigh = cc.DrawNode.create();
+    thigh.setContentSize(cc.size(0, leglen / 2));
+    thigh.drawSegment(
+        cc.p(0, 0), cc.p(0, -leglen / 2),
         acg.ext.sm_strokew, colour);
-    leg.setAnchorPoint(cc.p(0, 0));
-    return leg;
+    thigh.setAnchorPoint(cc.p(0, 0));
+    var shin = cc.DrawNode.create();
+    shin.drawSegment(
+        cc.p(0, 0), cc.p(0, -leglen / 2),
+        acg.ext.sm_strokew, colour);
+    shin.drawDot(cc.p(0, 0), 3, colour);
+    shin.setAnchorPoint(cc.p(0, 0));
+    // The position will be set in acg.init_matter()
+    //shin.setPosition(cc.p(0, -leglen / 2));
+    thigh.addChild(shin);
+    thigh._acg_sm_shin = shin;
+    return thigh;
 }
 
 acg.ext.stickman = function (attr, action, movements) {
@@ -60,17 +65,29 @@ acg.ext.stickman = function (attr, action, movements) {
     var leg1 = acg.ext.stickman_oneleg(leglen, acg.colour.BLACK);
     acg.init_matter(leg1,
         {x: 0.5, y: leglen / h, ax: 0, ay: 0}, movements['leg1'], c);
+    acg.init_matter(leg1._acg_sm_shin,
+        {x: 0, y: -1, ax: 0, ay: 0}, movements['leg1-shin'], leg1);
     var leg2 = acg.ext.stickman_oneleg(leglen, acg.colour.BLACK);
     acg.init_matter(leg2,
         {x: 0.5, y: leglen / h, ax: 0, ay: 0}, movements['leg2'], c);
+    acg.init_matter(leg2._acg_sm_shin,
+        {x: 0, y: -1, ax: 0, ay: 0}, movements['leg2-shin'], leg2);
     // The arms -- I'm a programmer, not a gibbon.
     // Okay, I admit... The arms and the legs are exactly the same type.
     var arm1 = acg.ext.stickman_oneleg(armlen, acg.colour.BLACK);
     acg.init_matter(arm1,
         {x: 0.5, y: (armpos + leglen) / h, ax: 0, ay: 0}, movements['arm1'], c);
+    acg.init_matter(arm1._acg_sm_shin,
+        {x: 0, y: -1, ax: 0, ay: 0}, movements['arm1-shin'], arm1);
     var arm2 = acg.ext.stickman_oneleg(armlen, acg.colour.BLACK);
     acg.init_matter(arm2,
         {x: 0.5, y: (armpos + leglen) / h, ax: 0, ay: 0}, movements['arm2'], c);
+    acg.init_matter(arm2._acg_sm_shin,
+        {x: 0, y: -1, ax: 0, ay: 0}, movements['arm2-shin'], arm2);
 
-    return [c._acg_id, head._acg_id, leg1._acg_id, leg2._acg_id, arm1._acg_id, arm2._acg_id];
+    return [c._acg_id, head._acg_id,
+        leg1._acg_id, leg1._acg_sm_shin._acg_id,
+        leg2._acg_id, leg2._acg_sm_shin._acg_id,
+        arm1._acg_id, arm1._acg_sm_shin._acg_id,
+        arm2._acg_id, arm2._acg_sm_shin._acg_id];
 };

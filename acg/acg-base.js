@@ -56,6 +56,13 @@ acg.apply_attr = function (s, attr) {
     s.setLocalZOrder(attr.zorder || 0);
     s.setVisible(attr.visible || true);   // deprecated
 
+    // No need. Call setContentSize() directly when creating the element.
+    /*if (s.setContentSize !== undefined) {
+        s.setContentSize(cc.size(
+            (attr.width || 1) * acg.width,
+            (attr.height || 1) * acg.height));
+    }*/
+
     // Class-specific attributes
     if (s instanceof cc.LabelTTF) {
         s.setFontName(attr.fontname || 'Arial');

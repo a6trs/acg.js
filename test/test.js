@@ -82,7 +82,8 @@ var initStage = function () {
         ['delay', 3]
     ], {
         'head': ['+', ['delay', 2], ['rotate-by', 0.5, 45]],
-        'leg1': ['rotate-by', 1, 30],
+        'leg1': ['rotate-by', 2, 60],
+        'leg1-shin': ['+', ['delay', 1], ['rotate-by', 1, -30]],
         'leg2': ['rotate-by', 0.5, -60],
         'arm1': ['rotate-by', 1, 30],
         'arm2': ['rotate-by', 1, -30]
