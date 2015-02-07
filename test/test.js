@@ -73,6 +73,10 @@ var initStage = function () {
     ));
     acg.put(5, acg.ext.nametag('ME', 'Subtitle', 0.2, 0.12));
     acg.put(5, acg.ext.nametag('YOU', 'Subtitle', 0.6, 0.1));
+    acg.put(6, acg.ext.speechbub('Haha', 0.2, 0.5, 0.5, 0, 1.3, -0.3, ['+',
+        ['move-by', 2, cc.p(-0.1, 0)],
+        ['delay', 2]
+    ]));
     acg.put(5, acg.ext.stickman({x: 0.5, y: 0.2}, ['+',
         ['move-by', 2, cc.p(-0.2, 0)],
         ['delay', 3]
