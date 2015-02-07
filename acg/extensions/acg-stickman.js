@@ -43,8 +43,12 @@ acg.ext.stickman = function (attr, action, movements) {
 
     // The head
     var head = cc.DrawNode.create();
-    head.drawDot(cc.p(headsize / 2, headsize / 2), headsize / 2, acg.colour.BLACK);
-    acg.init_matter(head, {x: 0, y: (leglen + bodylen) / h}, movements['head'], c);
+    head.drawDot(cc.p(0, headsize / 2), headsize / 2, acg.colour.BLACK);
+    acg.init_matter(head, {
+        x: 0.5, y: (leglen + bodylen) / h,
+        ax: 0.5, ay: 0,
+        width: 1, height: headsize / h
+    }, movements['head'], c);
     // The body -- Sounds like we're writing HTML...
     var body = cc.DrawNode.create();
     body.drawSegment(
