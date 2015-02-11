@@ -57,12 +57,6 @@ acg.apply_attr = function (s, attr) {
     s.setVisible(attr.visible || true);   // deprecated
 
     // Call setContentSize() directly when creating the element.
-    // Use if need to force update.
-    if (s.setContentSize !== undefined && (attr.f_width && attr.f_height)) {
-        s.setContentSize(cc.size(
-            (attr.f_width || 1) * acg.width,
-            (attr.f_height || 1) * acg.height));
-    }
 
     // Class-specific attributes
     if (s instanceof cc.LabelTTF) {

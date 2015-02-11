@@ -20,8 +20,8 @@ acg.ext.speechbub = function (text, sx, sy, ax, ay, lex, ley, actions) {
         h = sz.height;
     d.drawSegment(cc.p(w * ax, h * ay), cc.p(w * lex, h * ley),
         acg.ext.speechbub_borderw / 2, acg.colour.BLACK);
+    d.setContentSize(cc.size(w, h));
     acg.init_matter(d,
-        {x: sx, y: sy, ax: ax, ay: ay, opacity: 1, colour: acg.colour.BLACK,
-            f_width: w / acg.width, f_height: h / acg.height}, actions);
+        {x: sx, y: sy, ax: ax, ay: ay, opacity: 1, colour: acg.colour.BLACK,}, actions);
     return d._acg_id;
 };
