@@ -22,6 +22,6 @@ acg.ext.speechbub = function (text, sx, sy, ax, ay, lex, ley, actions) {
         acg.ext.speechbub_borderw / 2, acg.colour.BLACK);
     acg.init_matter(d,
         {x: sx, y: sy, ax: ax, ay: ay, opacity: 1, colour: acg.colour.BLACK,
-            width: w / acg.width, height: h / acg.height}, actions);
+            f_width: w / acg.width, f_height: h / acg.height}, actions);
     return d._acg_id;
 };

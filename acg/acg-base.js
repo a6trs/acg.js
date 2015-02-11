@@ -56,12 +56,13 @@ acg.apply_attr = function (s, attr) {
     s.setLocalZOrder(attr.zorder || 0);
     s.setVisible(attr.visible || true);   // deprecated
 
-    // No need. Call setContentSize() directly when creating the element.
-    /*if (s.setContentSize !== undefined) {
+    // Call setContentSize() directly when creating the element.
+    // Use if need to force update.
+    if (s.setContentSize !== undefined && (attr.f_width && attr.f_height)) {
         s.setContentSize(cc.size(
-            (attr.width || 1) * acg.width,
-            (attr.height || 1) * acg.height));
-    }*/
+            (attr.f_width || 1) * acg.width,
+            (attr.f_height || 1) * acg.height));
+    }
 
     // Class-specific attributes
     if (s instanceof cc.LabelTTF) {
