@@ -49,7 +49,10 @@ acg.apply_attr = function (s, attr) {
     s.setAnchorPoint(attr.ax, attr.ay);
     s.setScale(attr.scale || 1);
     // FIXME: attr.colour doesn't affect sprites
-    if (attr.colour) s.setColor(cc.color.apply(null, attr.colour));
+    if (attr.colour)
+        // Use the colour directly if it isn't an array.
+        // We assume it's already an instance of cc.color.
+        s.setColor(attr.colour[0] ? cc.color.apply(null, attr.colour) : attr.colour);
     else s.setColor(cc.color.WHITE);
     s.setOpacity(attr.opacity * 255.0 || 255);
     s.setRotation(attr.rotation || 0);
