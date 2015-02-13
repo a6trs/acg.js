@@ -15,6 +15,9 @@ acg._tottime = 0;   // only calculated after a commit() call
 acg._offsets = [];
 acg._cur_offset = 0;
 
+acg._onpause_callbacks = [];
+acg._onresume_callbacks = [];
+
 acg.putOne = function (time, id) {
     time += acg._cur_offset;
     acg.matters[id]._acg_entertime = time;
@@ -171,6 +174,7 @@ acg.pause = function () {
     if (!acg.paused) {
         acg.paused = true;
         acg.scene.unscheduleUpdate();
+        acg._onpause_callbacks.forEach(function (f) { f(); });
     }
 };
 
@@ -178,6 +182,7 @@ acg.resume = function () {
     if (acg.paused) {
         acg.paused = false;
         acg.scene.scheduleUpdate();
+        acg._onresume_callbacks.forEach(function (f) { f(); });
     }
 };
 
