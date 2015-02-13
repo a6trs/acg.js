@@ -36,7 +36,7 @@ acg.ext._233_addSticky = function (type, line, text, duration, colour) {
         // Top-sticky
         lbl.setAnchorPoint(cc.p(0.5, 1));
         lbl.setNormalizedPosition(cc.p(0.5, 1 - line * acg.ext._233_lineh / acg.width));
-    } else id (type === 2) {
+    } else if (type === 2) {
         // Bottom-sticky
         lbl.setAnchorPoint(cc.p(0.5, 0));
         lbl.setNormalizedPosition(cc.p(0.5, line * acg.ext._233_lineh / acg.width));
