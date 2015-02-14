@@ -135,6 +135,58 @@ acg.ext.cp_timeline = function (callback) {
     return tl;
 };
 
+// angleFrom and angleTo are in radians
+acg.ext.pushArcVerts = function (verts, centre, radius, angleFrom, angleTo) {
+    var segments = 25,
+        coef = (angleTo - angleFrom) / segments;
+    for (var i = 0; i <= segments; i++) {
+        var rads = i * coef;
+        verts.push(cc.p(
+            radius * Math.cos(rads + angleFrom) + centre.x,
+            radius * Math.sin(rads + angleFrom) + centre.y));
+    }
+};
+
+acg.ext.cp_danmakuipt = function () {
+    var di = cc.DrawNode.create();
+    var di_w = acg.width * 0.88;
+    var di_h = 24;
+    var di_br = 4;  // Border radius
+    di.setAnchorPoint(cc.p(0.5, 1));
+    //di.drawRect(cc.p(di_br, di_h), cc.p(di_w - di_br, 0), cc.color.WHITE, 0);
+    //di.drawRect(cc.p(0, di_h - di_br), cc.p(di_w, di_br), cc.color.WHITE, 0);
+    var vertices = [];
+    // Cocos will draw a line between each two neighbouring arcs for us.
+    // (I drew a line, I drew a line for you... -- Yellow by Coldplay)
+    acg.ext.pushArcVerts(vertices, cc.p(di_br, di_br), di_br, -Math.PI / 2, -Math.PI);
+    acg.ext.pushArcVerts(vertices, cc.p(di_br, di_h - di_br), di_br, Math.PI, Math.PI / 2);
+    acg.ext.pushArcVerts(vertices, cc.p(di_w - di_br, di_h - di_br), di_br, Math.PI / 2, 0);
+    acg.ext.pushArcVerts(vertices, cc.p(di_w - di_br, di_br), di_br, 0, -Math.PI / 2);
+    // Don't care about that underscore. It makes no effect.
+    di.drawPoly_(vertices, cc.color.WHITE, 1, cc.color.BLACK);
+    di.setContentSize(cc.size(di_w, di_h));
+
+    cc.eventManager.addListener({
+        event: cc.EventListener.TOUCH_ONE_BY_ONE,
+        swallowTouches: true,
+        onTouchBegan: function (touch, event) {
+            var b = acg.ext._cp_ctrls_showed
+                && acg.ext.is_touch_in_content(touch, event);
+            if (b) {
+                // Show the HTML input element.
+                var ipt = document.getElementById('acg_cp_danmaku');
+                ipt.style.display = '';
+                ipt.style.position = 'absolute';
+                ipt.style.top = '5%';
+                ipt.style.left = 0.2 * acg.width + 'px';
+                ipt.style.width = 0.6 * acg.width + 'px';
+            }
+            return b;
+        }
+    }, di);
+    return di;
+};
+
 acg.ext.cp_enable = function () {
     cc.director.setDisplayStats(false);
     // Create the touch listener layer
@@ -157,6 +209,11 @@ acg.ext.cp_enable = function () {
     tl.setNormalizedPosition(cc.p(0.95, 0.08));
     tl.setOpacity(0);
     cp.addChild(tl);
+    var bi = acg.ext.cp_danmakuipt();
+    acg.ext._cp_ctrls[2] = bi;
+    bi.setNormalizedPosition(cc.p(0.5, 1));
+    bi.setOpacity(0);
+    cp.addChild(bi);
     // Update the progress of the timeline regularly
     acg.scene.schedule(function () {
         tl.setProgress(acg.time / acg.tot_time());
@@ -194,6 +251,10 @@ acg.ext.cp_enable = function () {
                     ['move-to', 0.15, cc.p(0.95, 0.08)],
                     ['fade-out', 0.15]
                 ]));
+                bi.runAction(acg.ac.parse(['//',
+                    ['move-to', 0.15, cc.p(0.5, 1)],
+                    ['fade-out', 0.15]
+                ]));
             } else if (!acg.ext._cp_swiping) {
                 acg.ext._cp_ctrls_showed = true;
                 btn.runAction(acg.ac.parse(['//',
@@ -202,6 +263,10 @@ acg.ext.cp_enable = function () {
                 ]));
                 tl.runAction(acg.ac.parse(['//',
                     ['move-to', 0.15, cc.p(0.95, 0.1)],
+                    ['fade-in', 0.15]
+                ]));
+                bi.runAction(acg.ac.parse(['//',
+                    ['move-to', 0.15, cc.p(0.5, 0.95)],
                     ['fade-in', 0.15]
                 ]));
             } else {
