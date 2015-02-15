@@ -175,15 +175,24 @@ acg.ext.cp_danmakuipt = function () {
             if (b) {
                 // Show the HTML input element.
                 var ipt = document.getElementById('acg_cp_danmaku');
+                var container = document.getElementById('Cocos2dGameContainer');
                 ipt.style.display = '';
                 ipt.style.position = 'absolute';
                 ipt.style.top = '5%';
-                ipt.style.left = 0.2 * acg.width + 'px';
-                ipt.style.width = 0.6 * acg.width + 'px';
+                ipt.style.left = (container.offsetLeft + 0.06 * container.clientWidth) + 'px';
+                ipt.style.width = (0.88 * container.clientWidth) + 'px';
+                ipt.style['font-size'] =
+                    (16 / acg.height * container.clientHeight) + 'px';
+                ipt.onkeyup = function (e) {
+                    if (e.keyCode === 13) {}
+                };
             }
             return b;
         }
     }, di);
+    di.hideInput = function () {
+        document.getElementById('acg_cp_danmaku').style.display = 'none';
+    };
     return di;
 };
 
@@ -255,6 +264,7 @@ acg.ext.cp_enable = function () {
                     ['move-to', 0.15, cc.p(0.5, 1)],
                     ['fade-out', 0.15]
                 ]));
+                bi.hideInput();
             } else if (!acg.ext._cp_swiping) {
                 acg.ext._cp_ctrls_showed = true;
                 btn.runAction(acg.ac.parse(['//',
