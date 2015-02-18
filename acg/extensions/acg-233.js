@@ -19,7 +19,8 @@ acg.ext._233_onresume_reg = function () {
     }
     // If the comment has already been shown, then let it go
     // Otherwise, remove it and use comments at current time instead.
-    acg.ext._233_layer.getChildren().forEach(function (e) {
+    // XXX: This has to be done twice, or some comments won't disappear QwQ
+    for (var i = 0; i < 2; i++) acg.ext._233_layer.getChildren().forEach(function (e) {
         if (e.isVisible()) e.resume();
         else e.removeFromParent(true);
     });
@@ -93,11 +94,11 @@ acg.ext._233_addSticky = function (type, line, text, time, duration, colour) {
     if (type === 1) {
         // Top-sticky
         lbl.setAnchorPoint(cc.p(0.5, 1));
-        lbl.setNormalizedPosition(cc.p(0.5, 1 - line * acg.ext._233_lineh / acg.width));
+        lbl.setNormalizedPosition(cc.p(0.5, 1 - line * acg.ext._233_lineh / acg.height));
     } else if (type === 2) {
         // Bottom-sticky
         lbl.setAnchorPoint(cc.p(0.5, 0));
-        lbl.setNormalizedPosition(cc.p(0.5, line * acg.ext._233_lineh / acg.width));
+        lbl.setNormalizedPosition(cc.p(0.5, line * acg.ext._233_lineh / acg.height));
     } else {
         console.log('acg.ext._233_addSticky: Invalid type T^T');
         return;
