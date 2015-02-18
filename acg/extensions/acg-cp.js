@@ -10,6 +10,14 @@ acg.ext._cp_swiping = false;
 // Used in both the timeline and the swipe-to-seek functionality
 acg.ext._cp_shouldbepaused = null;
 
+acg.ext._cp_colourdisp_tag = 12138;
+acg.ext._cp_danmakutypes = ['danmaku-sliding.png', 'danmaku-stktop.png', 'danmaku-stkbottom.png'];
+// Yeah, I copied these from Bilibili's Android client...
+// Forgive me for the imprecise RGB values...
+acg.ext._cp_textcolours = [
+    '#ffffff', '#ff0000', '#ffff00', '#00ff00', '#2299ff', '#dd00dd',
+    '#2299ff', '#22ff00', '#000088', '#ffbb00', '#9900bb', '#55dddd', '#887700'];
+
 acg.ext.is_touch_in_content = function (touch, event) {
     var p = event.getCurrentTarget().convertTouchToNodeSpace(touch);
     var s = event.getCurrentTarget().getContentSize();
@@ -147,6 +155,27 @@ acg.ext.pushArcVerts = function (verts, centre, radius, angleFrom, angleTo) {
     }
 };
 
+// The menu system of Cocos is plump. We write a simple one instead.
+acg.ext.toggle_menu = function (optionsCnt, callback) {
+    var menu = cc.Node.create();
+    var curidx = 0;
+    menu.selectedIndex = function () { return curidx; };
+    cc.eventManager.addListener({
+        event: cc.EventListener.TOUCH_ONE_BY_ONE,
+        swallowTouches: true,
+        onTouchBegan: function (touch, event) {
+            return (acg.ext._cp_ctrls_showed
+                && acg.ext.is_touch_in_content(touch, event));
+        },
+        onTouchEnded: function (touch, event) {
+            if (!acg.ext.is_touch_in_content(touch, event)) return;
+            curidx = (curidx + 1) % optionsCnt;
+            callback(curidx);
+        }
+    }, menu);
+    return menu;
+};
+
 acg.ext.cp_danmakuipt = function (callback) {
     var di = cc.DrawNode.create();
     var di_w = acg.width * 0.88;
@@ -162,9 +191,48 @@ acg.ext.cp_danmakuipt = function (callback) {
     acg.ext.pushArcVerts(vertices, cc.p(di_br, di_h - di_br), di_br, Math.PI, Math.PI / 2);
     acg.ext.pushArcVerts(vertices, cc.p(di_w - di_br, di_h - di_br), di_br, Math.PI / 2, 0);
     acg.ext.pushArcVerts(vertices, cc.p(di_w - di_br, di_br), di_br, 0, -Math.PI / 2);
-    // Don't care about that underscore. It makes no effect.
+    // Don't care about that underscore. It makes no effect, and is just a little faster.
     di.drawPoly_(vertices, cc.color.WHITE, 1, cc.color.BLACK);
     di.setContentSize(cc.size(di_w, di_h));
+
+    // The comment display type selector
+    var dtypecnt = acg.ext._cp_danmakutypes.length;
+    var cmttyp_menu = acg.ext.toggle_menu(dtypecnt, function (idx) {
+        console.log(idx);
+        for (var i = 0; i < dtypecnt; i++)
+            cmttyp_menu.getChildByTag(i).setVisible(i === idx);
+    });
+    cmttyp_menu.setAnchorPoint(cc.p(0, 1));
+    cmttyp_menu.setPosition(cc.p(0, -5));
+    cmttyp_menu.setContentSize(cc.size(60, 45));
+    cmttyp_menu.setCascadeOpacityEnabled(true);
+    di.setCascadeOpacityEnabled(true);
+    di.addChild(cmttyp_menu);
+    for (var i = 0; i < dtypecnt; i++) {
+        var s = cc.Sprite.create(acg.ext._cp_danmakutypes[i]);
+        s.setAnchorPoint(cc.p(0, 0));
+        s.setVisible(i === 0);
+        cmttyp_menu.addChild(s, 0, i);
+    }
+    // The comment text colour selector
+    var tclcnt = acg.ext._cp_textcolours.length;
+    var cmtcl_menu = acg.ext.toggle_menu(tclcnt, function (idx) {
+        cmtcl_menu.getChildByTag(acg.ext._cp_colourdisp_tag)
+            .setColor(cc.color(acg.ext._cp_textcolours[idx]));
+    });
+    cmtcl_menu.setAnchorPoint(cc.p(0, 1));
+    cmtcl_menu.setPosition(cc.p(75, -6));
+    cmtcl_menu.setContentSize(cc.size(60, 45));
+    cmtcl_menu.setCascadeOpacityEnabled(true);
+    di.addChild(cmtcl_menu);
+    var colourdispbg = cc.LayerColor.create(cc.color(0, 0, 0));
+    colourdispbg.setContentSize(cc.size(54, 40.5));
+    colourdispbg.setPosition(cc.p(0, 3));
+    cmtcl_menu.addChild(colourdispbg, 0);
+    var colourdisp = cc.LayerColor.create(cc.color(acg.ext._cp_textcolours[0]));
+    colourdisp.setContentSize(cc.size(48, 36));
+    colourdisp.setPosition(cc.p(3, 6));
+    cmtcl_menu.addChild(colourdisp, 1, acg.ext._cp_colourdisp_tag);
 
     cc.eventManager.addListener({
         event: cc.EventListener.TOUCH_ONE_BY_ONE,
@@ -188,7 +256,10 @@ acg.ext.cp_danmakuipt = function (callback) {
                 ipt.onkeyup = function (e) {
                     if (e.keyCode === 13) {
                         // Send the comment.
-                        callback(acg.time, e.target.value);
+                        callback(acg.time,
+                            cmttyp_menu.selectedIndex(),
+                            acg.ext._cp_textcolours[cmtcl_menu.selectedIndex()],
+                            e.target.value);
                         e.target.value = '';
                         di.hideInput();
                     }
