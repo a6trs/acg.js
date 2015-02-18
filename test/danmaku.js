@@ -15,7 +15,9 @@ acg.ext._233_add(5, 'QAQ', cc.color.GRAY, js233.CMT_SLIDING);
 var initStage = function () {
     acg.put(0, acg.img('h.png', {scale: 0.4}, ['delay', 4]));
     acg.commit();
-    acg.ext.cp_enable();
+    acg.ext.cp_enable(function (time, cmt) {
+        alert(time + '\n' + cmt);
+    });
     acg.ext._233_commit();
     acg.travel(0);
 };

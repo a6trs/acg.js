@@ -147,7 +147,7 @@ acg.ext.pushArcVerts = function (verts, centre, radius, angleFrom, angleTo) {
     }
 };
 
-acg.ext.cp_danmakuipt = function () {
+acg.ext.cp_danmakuipt = function (callback) {
     var di = cc.DrawNode.create();
     var di_w = acg.width * 0.88;
     var di_h = 24;
@@ -183,8 +183,15 @@ acg.ext.cp_danmakuipt = function () {
                 ipt.style.width = (0.88 * container.clientWidth) + 'px';
                 ipt.style['font-size'] =
                     (16 / acg.height * container.clientHeight) + 'px';
+                // XXX: focus() doesn't work if called directly.
+                setTimeout(function () { ipt.focus(); }, 10);
                 ipt.onkeyup = function (e) {
-                    if (e.keyCode === 13) {}
+                    if (e.keyCode === 13) {
+                        // Send the comment.
+                        callback(acg.time, e.target.value);
+                        e.target.value = '';
+                        di.hideInput();
+                    }
                 };
             }
             return b;
@@ -196,7 +203,9 @@ acg.ext.cp_danmakuipt = function () {
     return di;
 };
 
-acg.ext.cp_enable = function () {
+// danmakuSendCallback tells CP how to send a comment.
+// If undefined then the comment sending input box won't be shown.
+acg.ext.cp_enable = function (danmakuSendCallback) {
     cc.director.setDisplayStats(false);
     // Create the touch listener layer
     var cp = cc.Layer.create();
@@ -218,11 +227,14 @@ acg.ext.cp_enable = function () {
     tl.setNormalizedPosition(cc.p(0.95, 0.08));
     tl.setOpacity(0);
     cp.addChild(tl);
-    var bi = acg.ext.cp_danmakuipt();
-    acg.ext._cp_ctrls[2] = bi;
-    bi.setNormalizedPosition(cc.p(0.5, 1));
-    bi.setOpacity(0);
-    cp.addChild(bi);
+    var bi = undefined;
+    if (danmakuSendCallback) {
+        bi = acg.ext.cp_danmakuipt(danmakuSendCallback);
+        acg.ext._cp_ctrls[2] = bi;
+        bi.setNormalizedPosition(cc.p(0.5, 1));
+        bi.setOpacity(0);
+        cp.addChild(bi);
+    }
     // Update the progress of the timeline regularly
     acg.scene.schedule(function () {
         tl.setProgress(acg.time / acg.tot_time());
@@ -260,11 +272,13 @@ acg.ext.cp_enable = function () {
                     ['move-to', 0.15, cc.p(0.95, 0.08)],
                     ['fade-out', 0.15]
                 ]));
-                bi.runAction(acg.ac.parse(['//',
-                    ['move-to', 0.15, cc.p(0.5, 1)],
-                    ['fade-out', 0.15]
-                ]));
-                bi.hideInput();
+                if (bi) {
+                    bi.runAction(acg.ac.parse(['//',
+                        ['move-to', 0.15, cc.p(0.5, 1)],
+                        ['fade-out', 0.15]
+                    ]));
+                    bi.hideInput();
+                }
             } else if (!acg.ext._cp_swiping) {
                 acg.ext._cp_ctrls_showed = true;
                 btn.runAction(acg.ac.parse(['//',
@@ -275,10 +289,12 @@ acg.ext.cp_enable = function () {
                     ['move-to', 0.15, cc.p(0.95, 0.1)],
                     ['fade-in', 0.15]
                 ]));
-                bi.runAction(acg.ac.parse(['//',
-                    ['move-to', 0.15, cc.p(0.5, 0.95)],
-                    ['fade-in', 0.15]
-                ]));
+                if (bi) {
+                    bi.runAction(acg.ac.parse(['//',
+                        ['move-to', 0.15, cc.p(0.5, 0.95)],
+                        ['fade-in', 0.15]
+                    ]));
+                }
             } else {
                 if (!acg.ext._cp_shouldbepaused) acg.resume();
                 acg.ext._cp_shouldbepaused = null;
