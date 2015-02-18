@@ -6,6 +6,7 @@ acg.ext._cp_layer = null;
 acg.ext._cp_ctrls = [];
 acg.ext._cp_ctrls_showed = false;
 acg.ext._cp_swiping = false;
+acg.ext._cp_swipemax = 25;  // The time travelled if swiped te whole width
 // Whether the animation is paused at the time when dragging started
 // Used in both the timeline and the swipe-to-seek functionality
 acg.ext._cp_shouldbepaused = null;
@@ -329,7 +330,10 @@ acg.ext.cp_enable = function (danmakuSendCallback) {
                 if (acg.ext._cp_shouldbepaused === null)
                     acg.ext._cp_shouldbepaused = acg.paused;
                 acg.pause();
-                tl.setProgress(tl.getProgress() + touch.getDelta().x / 600);
+                var t = tl.getProgress()
+                    + touch.getDelta().x / acg.width    // (delta-x)/(W)
+                    * acg.ext._cp_swipemax / acg.tot_time();
+                tl.setProgress(t < 0 ? 0 : t);
             }
         },
         onTouchEnded: function (touch, event) {
