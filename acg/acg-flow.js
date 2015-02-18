@@ -46,14 +46,14 @@ acg.end_offset = function () {
 acg.sort = function (a, l, r) {
     if (l === undefined) { l = 0; r = a.length - 1; }
     var i = l, j = r, x = a[(l + r) >> 1].time, t;
-    do {
+    while (i <= j) {
         while (a[i].time < x) i++;
         while (a[j].time > x) j--;
         if (i <= j) {
             t = a[i]; a[i] = a[j]; a[j] = t;
             i++; j--;
         }
-    } while (i <= j);
+    }
     if (i < r) acg.sort(a, i, r);
     if (j > l) acg.sort(a, l, j);
 };
