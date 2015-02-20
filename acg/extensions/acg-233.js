@@ -36,8 +36,10 @@ acg.ext._233_onresume_reg = function () {
     acg.ext._233_doops(ops);
 };
 
-acg._onpause_callbacks.push(acg.ext._233_onpause_reg);
-acg._onresume_callbacks.push(acg.ext._233_onresume_reg);
+acg.ext._233_enable = function () {
+    acg._onpause_callbacks.push(acg.ext._233_onpause_reg);
+    acg._onresume_callbacks.push(acg.ext._233_onresume_reg);
+};
 
 acg.ext._233_add = function (time, text, colour, type) {
     // The 'time' field is used for acg.sort()
