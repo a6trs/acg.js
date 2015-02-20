@@ -1,5 +1,6 @@
 var acg = acg || {};
 acg.ext = acg.ext || {};
+acg.ext.set_res_path('acg-res');
 
 //////// DANMAKU PART ////////
 acg.ext._233_add(0.1, 'xxx', cc.color.WHITE, js233.CMT_SLIDING);

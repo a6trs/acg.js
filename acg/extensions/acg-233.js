@@ -79,6 +79,7 @@ acg.ext._233_addSliding = function (line, text, time, duration, colour) {
     lbl.setNormalizedPositionX(1);
     lbl.setNormalizedPositionY(1 - (line * acg.ext._233_lineh) / acg.height);
     lbl.setColor(colour);
+    lbl.enableStroke(cc.color.BLACK, 1);
     lbl.setVisible(false);
     lbl.runAction(cc.sequence(
         cc.delayTime(time), cc.show(),
@@ -104,6 +105,7 @@ acg.ext._233_addSticky = function (type, line, text, time, duration, colour) {
         return;
     }
     lbl.setColor(colour);
+    lbl.enableStroke(cc.color.BLACK, 1);
     lbl.setVisible(false);
     lbl.runAction(cc.sequence(
         cc.delayTime(time), cc.show(),

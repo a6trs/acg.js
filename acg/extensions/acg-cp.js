@@ -146,7 +146,8 @@ acg.ext.cp_timeline = function (callback) {
 
 // angleFrom and angleTo are in radians
 acg.ext.pushArcVerts = function (verts, centre, radius, angleFrom, angleTo) {
-    var segments = 25,
+    // A large 'segments' will result in a strange performance on small screens
+    var segments = 4,
         coef = (angleTo - angleFrom) / segments;
     for (var i = 0; i <= segments; i++) {
         var rads = i * coef;
@@ -210,9 +211,10 @@ acg.ext.cp_danmakuipt = function (callback) {
     di.setCascadeOpacityEnabled(true);
     di.addChild(cmttyp_menu);
     for (var i = 0; i < dtypecnt; i++) {
-        var s = cc.Sprite.create(acg.ext._cp_danmakutypes[i]);
+        var s = cc.Sprite.create(acg.ext._res_path + '/' + acg.ext._cp_danmakutypes[i]);
         s.setAnchorPoint(cc.p(0, 0));
         s.setVisible(i === 0);
+        s.setScale(0.5);
         cmttyp_menu.addChild(s, 0, i);
     }
     // The comment text colour selector
@@ -227,12 +229,12 @@ acg.ext.cp_danmakuipt = function (callback) {
     cmtcl_menu.setCascadeOpacityEnabled(true);
     di.addChild(cmtcl_menu);
     var colourdispbg = cc.LayerColor.create(cc.color(0, 0, 0));
-    colourdispbg.setContentSize(cc.size(54, 40.5));
+    colourdispbg.setContentSize(cc.size(54, 41.5));
     colourdispbg.setPosition(cc.p(0, 3));
     cmtcl_menu.addChild(colourdispbg, 0);
     var colourdisp = cc.LayerColor.create(cc.color(acg.ext._cp_textcolours[0]));
-    colourdisp.setContentSize(cc.size(48, 36));
-    colourdisp.setPosition(cc.p(3, 6));
+    colourdisp.setContentSize(cc.size(46, 34));
+    colourdisp.setPosition(cc.p(4, 7));
     cmtcl_menu.addChild(colourdisp, 1, acg.ext._cp_colourdisp_tag);
 
     cc.eventManager.addListener({
@@ -247,7 +249,7 @@ acg.ext.cp_danmakuipt = function (callback) {
                 var container = document.getElementById('Cocos2dGameContainer');
                 ipt.style.display = '';
                 ipt.style.position = 'absolute';
-                ipt.style.top = '5%';
+                ipt.style.top = (container.offsetTop + 0.05 * container.clientHeight) + 'px';
                 ipt.style.left = (container.offsetLeft + 0.06 * container.clientWidth) + 'px';
                 ipt.style.width = (0.88 * container.clientWidth) + 'px';
                 ipt.style['font-size'] =
