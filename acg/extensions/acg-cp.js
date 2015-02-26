@@ -19,6 +19,40 @@ acg.ext._cp_textcolours = [
     '#ffffff', '#ff0000', '#ffff00', '#00ff00', '#2299ff', '#dd00dd',
     '#2299ff', '#22ff00', '#000088', '#ffbb00', '#9900bb', '#55dddd', '#887700'];
 
+// The HTML DOM input element
+acg.ext._cp_dominput = null;
+acg._init_callbacks.push(function () {
+    var ipt = document.createElement('input');
+    document.body.appendChild(ipt);
+    var container = document.getElementById('Cocos2dGameContainer');
+    ipt.style.display = 'none';
+    ipt.style.position = 'absolute';
+    ipt.type = 'text';
+    ipt.placeholder = 'Press Enter to send';
+    ipt.onkeyup = function (e) {
+        if (e.keyCode === 13) {
+            // Send the comment.
+            callback(acg.time,
+                cmttyp_menu.selectedIndex(),
+                acg.ext._cp_textcolours[cmtcl_menu.selectedIndex()],
+                e.target.value);
+            e.target.value = '';
+            di.hideInput();
+        }
+    };
+    acg.ext._cp_dominput = ipt;
+    var prev_onresize = window.onresize;
+    window.onresize = function () {
+        if (prev_onresize) prev_onresize(arguments);
+        ipt.style.top = (container.offsetTop + 0.05 * container.clientHeight) + 'px';
+        ipt.style.left = (container.offsetLeft + 0.06 * container.clientWidth) + 'px';
+        ipt.style.width = (0.88 * container.clientWidth) + 'px';
+        ipt.style['font-size'] =
+            (16 / acg.height * container.clientHeight) + 'px';
+    };
+    window.onresize();
+});
+
 acg.ext.is_touch_in_content = function (touch, event) {
     var p = event.getCurrentTarget().convertTouchToNodeSpace(touch);
     var s = event.getCurrentTarget().getContentSize();
@@ -245,34 +279,15 @@ acg.ext.cp_danmakuipt = function (callback) {
                 && acg.ext.is_touch_in_content(touch, event);
             if (b) {
                 // Show the HTML input element.
-                var ipt = document.getElementById('acg_cp_danmaku');
-                var container = document.getElementById('Cocos2dGameContainer');
-                ipt.style.display = '';
-                ipt.style.position = 'absolute';
-                ipt.style.top = (container.offsetTop + 0.05 * container.clientHeight) + 'px';
-                ipt.style.left = (container.offsetLeft + 0.06 * container.clientWidth) + 'px';
-                ipt.style.width = (0.88 * container.clientWidth) + 'px';
-                ipt.style['font-size'] =
-                    (16 / acg.height * container.clientHeight) + 'px';
+                acg.ext._cp_dominput.style.display = '';
                 // XXX: focus() doesn't work if called directly.
-                setTimeout(function () { ipt.focus(); }, 10);
-                ipt.onkeyup = function (e) {
-                    if (e.keyCode === 13) {
-                        // Send the comment.
-                        callback(acg.time,
-                            cmttyp_menu.selectedIndex(),
-                            acg.ext._cp_textcolours[cmtcl_menu.selectedIndex()],
-                            e.target.value);
-                        e.target.value = '';
-                        di.hideInput();
-                    }
-                };
+                setTimeout(function () { acg.ext._cp_dominput.focus(); }, 10);
             }
             return b;
         }
     }, di);
     di.hideInput = function () {
-        document.getElementById('acg_cp_danmaku').style.display = 'none';
+        acg.ext._cp_dominput.style.display = 'none';
     };
     return di;
 };
