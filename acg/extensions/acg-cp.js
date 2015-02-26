@@ -32,12 +32,7 @@ acg._init_callbacks.push(function () {
     ipt.onkeyup = function (e) {
         if (e.keyCode === 13) {
             // Send the comment.
-            callback(acg.time,
-                cmttyp_menu.selectedIndex(),
-                acg.ext._cp_textcolours[cmtcl_menu.selectedIndex()],
-                e.target.value);
-            e.target.value = '';
-            di.hideInput();
+            acg.ext._cp_cmt_callback(e);
         }
     };
     acg.ext._cp_dominput = ipt;
@@ -271,6 +266,14 @@ acg.ext.cp_danmakuipt = function (callback) {
     colourdisp.setPosition(cc.p(4, 7));
     cmtcl_menu.addChild(colourdisp, 1, acg.ext._cp_colourdisp_tag);
 
+    acg.ext._cp_cmt_callback = function (e) {
+        callback(acg.time,
+            cmttyp_menu.selectedIndex(),
+            acg.ext._cp_textcolours[cmtcl_menu.selectedIndex()],
+            e.target.value);
+        e.target.value = '';
+        di.hideInput();
+    };
     cc.eventManager.addListener({
         event: cc.EventListener.TOUCH_ONE_BY_ONE,
         swallowTouches: true,
