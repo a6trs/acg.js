@@ -19,3 +19,11 @@ var b2_5 = acg.find(a1, 4) === 5;
 var b2_6 = acg.find(a1, -4) === -1;
 test('acg.find', b2_1 && b2_2 && b2_3 && b2_4 && b2_5 && b2_6,
     [b2_1, b2_2, b2_3, b2_4, b2_5, b2_6]);
+
+var a2 = [], ex = undefined;
+try { acg.sort(a2); }
+catch (e) { ex = e; }
+test('acg.sort with zero length', ex === undefined, ex && ex.toString());
+try { acg.find(a2, 3); }
+catch (e) { ex = e; }
+test('acg.find with zero length', ex === undefined, ex && ex.toString());

@@ -44,7 +44,10 @@ acg.end_offset = function () {
 
 // Sorts an array by time.
 acg.sort = function (a, l, r) {
-    if (l === undefined) { l = 0; r = a.length - 1; }
+    if (l === undefined) {
+        if (a.length === 0) return;
+        l = 0; r = a.length - 1;
+    }
     var i = l, j = r, x = a[(l + r) >> 1].time, t;
     while (i <= j) {
         while (a[i].time < x) i++;
@@ -62,7 +65,7 @@ acg.sort = function (a, l, r) {
 // I'm sorry, but I don't know how it works exactly. It just passes the test.
 // Why should we +1 and -1 here and there??
 acg.find = function (a, t) {
-    if (t < a[0].time) return -1;
+    if (a.length === 0 || t < a[0].time) return -1;
     var lo = 0, hi = a.length - 1;
     while (lo < hi - 1) {
         var mid = (lo + hi) >> 1;
@@ -77,7 +80,9 @@ acg.find = function (a, t) {
 acg.tot_time = function () {
     if (acg._tottime > 0) return acg._tottime;
     var max = -1;
-    for (f in acg._flow_tmp) if (f.time > max) max = f.time;
+    acg._flow_tmp.forEach(function (f) {
+        if (f.time > max) max = f.time;
+    });
     return max;
 };
 
@@ -104,14 +109,14 @@ acg.commit = function () {
         var cur = acg._flow[i];
         // http://stackoverflow.com/q/597588
         var present = acg._flow[i - 1].present.slice();
-        for (e in cur.events) {
+        cur.events.forEach(function (e) {
             if (e.type === acg.EVENT_LEAVE) {
                 for (var j = 0; j < present.length; j++)
                     if (present[j] === e.id) present[j] = -1;
             } else {
                 present.push(e.id);
             }
-        };
+        });
         // Test data: [1, 0, 0, 0, 4, 2, 0, 9, 0] remove all zeroes
         cur.present = [];
         for (var j = 0; j < present.length; j++) {
@@ -125,12 +130,18 @@ acg.commit = function () {
 acg.travel = function (time) {
     // Remove all present matters
     var idx = acg.find(acg._flow, acg.time);
-    if (idx !== -1)
-        for (id in acg._flow[idx].present) acg.sweep(id);
+    if (idx !== -1) {
+        acg._flow[idx].present.forEach(function (id) {
+            acg.sweep(id);
+        });
+    }
     // Place all matters that should be present
     idx = acg.find(acg._flow, time);
-    if (idx !== -1)
-        for (id in acg._flow[idx].present) acg.place(id);
+    if (idx !== -1) {
+        acg._flow[idx].present.forEach(function (id) {
+            acg.place(id);
+        });
+    }
     acg._last_flow_idx = acg.find(acg._flow, time);
     acg.time = time;
     acg.update(0);  // Redraw the whole stage
@@ -146,27 +157,27 @@ acg.update = function (dt) {
     var idx = acg.find(acg._flow, acg.time);
     if (acg._last_flow_idx !== idx) {
         // New fellows are coming or present guys are leaving
-        for (e in acg._flow[idx].events) {
+        acg._flow[idx].events.forEach(function (e) {
             if (e.type === acg.EVENT_LEAVE) {
                 acg.sweep(e.id);
             } else {
                 acg.place(e.id);
             }
-        }
+        });
         acg._last_flow_idx = idx;
     }
     // Update all actions
-    for (id in acg._flow[idx].present) {
+    acg._flow[idx].present.forEach(function (id) {
         var m = acg.matters[id];
         m._acg_action.step(acg.time - m._acg_entertime - m._acg_action.getElapsed());
-    }
+    });
 };
 
 acg.pause = function () {
     if (!acg.paused) {
         acg.paused = true;
         acg.scene.unscheduleUpdate();
-        for (f in acg._onpause_callbacks) f();
+        acg._onpause_callbacks.forEach(function (f) { f(); });
     }
 };
 
@@ -174,7 +185,7 @@ acg.resume = function () {
     if (acg.paused) {
         acg.paused = false;
         acg.scene.scheduleUpdate();
-        for (f in acg._onresume_callbacks) f();
+        acg._onresume_callbacks.forEach(function (f) { f(); });
     }
 };
 
