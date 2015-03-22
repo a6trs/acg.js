@@ -17,6 +17,7 @@ var b2_3 = acg.find(a1, 3.5) === 2;
 var b2_4 = acg.find(a1, 3) === 2;
 var b2_5 = acg.find(a1, 4) === 5;
 var b2_6 = acg.find(a1, -4) === -1;
+var b2_6 = acg.find(a1, 12) === 11;
 test('acg.find', b2_1 && b2_2 && b2_3 && b2_4 && b2_5 && b2_6,
     [b2_1, b2_2, b2_3, b2_4, b2_5, b2_6]);
 
@@ -27,3 +28,7 @@ test('acg.sort with zero length', ex === undefined, ex && ex.toString());
 try { acg.find(a2, 3); }
 catch (e) { ex = e; }
 test('acg.find with zero length', ex === undefined, ex && ex.toString());
+a2 = [{time: 6}]
+try { acg.find(a2, 8); }
+catch (e) { ex = e; }
+test('acg.find with one element', ex === undefined, ex && ex.toString());

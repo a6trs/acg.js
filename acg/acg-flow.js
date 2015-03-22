@@ -66,13 +66,15 @@ acg.sort = function (a, l, r) {
 // Why should we +1 and -1 here and there??
 acg.find = function (a, t) {
     if (a.length === 0 || t < a[0].time) return -1;
+    // TODO: Get rid of this patch
+    else if (a[a.length - 1].time < t) return a.length;
     var lo = 0, hi = a.length - 1;
     while (lo < hi - 1) {
         var mid = (lo + hi) >> 1;
         if (a[mid].time >= t) hi = mid;
         else lo = mid;
     }
-    if (a[lo + 1].time === t) lo++; // What the...?
+    if (lo < a.length - 1 && a[lo + 1].time === t) lo++;    // What the...?
     while (lo > 0 && a[lo].time === a[lo - 1].time) lo--;
     return lo;
 };
