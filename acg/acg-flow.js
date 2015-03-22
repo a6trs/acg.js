@@ -77,9 +77,7 @@ acg.find = function (a, t) {
 acg.tot_time = function () {
     if (acg._tottime > 0) return acg._tottime;
     var max = -1;
-    acg._flow_tmp.forEach(function (f) {
-        if (f.time > max) max = f.time;
-    });
+    for (f in acg._flow_tmp) if (f.time > max) max = f.time;
     return max;
 };
 
@@ -106,14 +104,14 @@ acg.commit = function () {
         var cur = acg._flow[i];
         // http://stackoverflow.com/q/597588
         var present = acg._flow[i - 1].present.slice();
-        cur.events.forEach(function (e) {
+        for (e in cur.events) {
             if (e.type === acg.EVENT_LEAVE) {
                 for (var j = 0; j < present.length; j++)
                     if (present[j] === e.id) present[j] = -1;
             } else {
                 present.push(e.id);
             }
-        });
+        };
         // Test data: [1, 0, 0, 0, 4, 2, 0, 9, 0] remove all zeroes
         cur.present = [];
         for (var j = 0; j < present.length; j++) {
@@ -127,18 +125,12 @@ acg.commit = function () {
 acg.travel = function (time) {
     // Remove all present matters
     var idx = acg.find(acg._flow, acg.time);
-    if (idx !== -1) {
-        acg._flow[idx].present.forEach(function (id) {
-            acg.sweep(id);
-        });
-    }
+    if (idx !== -1)
+        for (id in acg._flow[idx].present) acg.sweep(id);
     // Place all matters that should be present
     idx = acg.find(acg._flow, time);
-    if (idx !== -1) {
-        acg._flow[idx].present.forEach(function (id) {
-            acg.place(id);
-        });
-    }
+    if (idx !== -1)
+        for (id in acg._flow[idx].present) acg.place(id);
     acg._last_flow_idx = acg.find(acg._flow, time);
     acg.time = time;
     acg.update(0);  // Redraw the whole stage
@@ -154,27 +146,27 @@ acg.update = function (dt) {
     var idx = acg.find(acg._flow, acg.time);
     if (acg._last_flow_idx !== idx) {
         // New fellows are coming or present guys are leaving
-        acg._flow[idx].events.forEach(function (e) {
+        for (e in acg._flow[idx].events) {
             if (e.type === acg.EVENT_LEAVE) {
                 acg.sweep(e.id);
             } else {
                 acg.place(e.id);
             }
-        });
+        }
         acg._last_flow_idx = idx;
     }
     // Update all actions
-    acg._flow[idx].present.forEach(function (id) {
+    for (id in acg._flow[idx].present) {
         var m = acg.matters[id];
         m._acg_action.step(acg.time - m._acg_entertime - m._acg_action.getElapsed());
-    });
+    }
 };
 
 acg.pause = function () {
     if (!acg.paused) {
         acg.paused = true;
         acg.scene.unscheduleUpdate();
-        acg._onpause_callbacks.forEach(function (f) { f(); });
+        for (f in acg._onpause_callbacks) f();
     }
 };
 
@@ -182,7 +174,7 @@ acg.resume = function () {
     if (acg.paused) {
         acg.paused = false;
         acg.scene.scheduleUpdate();
-        acg._onresume_callbacks.forEach(function (f) { f(); });
+        for (f in acg._onresume_callbacks) f();
     }
 };
 

@@ -26,7 +26,7 @@ acg.bootstrap = function (elem, aspect_ratio, callback) {
             clearInterval(timer);
             if (callback) callback();
             // Call all function registered
-            acg._init_callbacks.forEach(function (e) { e(); });
+            for (f in acg._init_callbacks) f();
         }
     }, 300);
 };
